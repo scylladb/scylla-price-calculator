@@ -24,7 +24,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build
-        run: npm run-script build
+        run: npm install && npm run-script build
 
       # Runs a set of commands using the runners shell
       - name: Deploy
