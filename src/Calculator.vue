@@ -30,18 +30,21 @@
 
 <script lang="ts">
 import ScyllaCloud from './components/ScyllaCloud.vue'
+import DyanamoDB from './components/DynamoDB.vue'
 import Dropdown from './components/Dropdown.vue'
 export default {
     data() {
         return {
             scyllaCalcs: {"Scylla cloud" :"scylla-cloud"},
-            workload: {writes: 0, reads: 0, storage: 0, itemSize: 0},
+            rivalCalcs: {"DynamoDB": "dynamodb"},
+            workload: {writes: 10000, reads: 50000, storage: 200, itemSize: 1},
             calc1: 'scylla-cloud',
             calc2: 'dynamodb'
         }
     },
     components: {
         'scylla-cloud': ScyllaCloud,
+        'dynamodb': DyanamoDB,
         'dropdown': Dropdown
     }
 }

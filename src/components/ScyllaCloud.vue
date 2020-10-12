@@ -5,18 +5,20 @@
         <dropdown v-model="mode" :options="modes" description="Mode"></dropdown>
         <div class="form-group row"><label class="col-form-label col-sm-6" for="replication-factor">Replication factor</label><input type="text" id="replication-factor" name="replication-factor" class="form-control col-sm-3" v-model="replicationFactor"></div>
     </form>
-    <table>
+    <table class="table">
         <thead>
+            <tr>
             <th>Cluster type</th>
             <th>Cost</th>
+            </tr>
         </thead>
         <tr>
             <td>On demand</td>
-            <td>{{price.onDemand}}</td>
+            <td>{{price.onDemand.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
         </tr>
         <tr>
             <td>Reserved</td>
-            <td>{{price.reserved}}</td>
+            <td>{{price.reserved.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
         </tr>
     </table>    
 </div>    
