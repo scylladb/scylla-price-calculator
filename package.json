@@ -7,13 +7,11 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
-  "vue": {
-    "runtimeCompiler": true
-  },
   "dependencies": {
     "core-js": "^3.6.5",
     "typescript": "^4.0.3",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",
@@ -29,6 +27,8 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "typescript": "~3.9.3"
   },
+  "vue": {
+  },
   "eslintConfig": {
     "root": true,
     "env": {
@@ -37,7 +37,9 @@
     "extends": [
       "plugin:vue/vue3-essential",
       "eslint:recommended",
-      "@vue/typescript"
+      "@vue/typescript",
+      "@vue/typescript/recommended",
+      "@vue/eslint-config-typescript"
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser"

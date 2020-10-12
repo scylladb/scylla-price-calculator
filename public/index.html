@@ -13,45 +13,6 @@
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div class="container" id="app">
-      <div class="row">
-        <form>
-          <div class="row form-group">
-            <label class="col-sm-6 col-form-label" for="reads">Read ops/sec</label><input v-model="reads" class="col-sm-3 form-control" type="text" name="reads" id="reads">
-          </div>
-          <div class="row form-group">
-            <label class="col-sm-6 col-form-label" for="writes">Write ops/sec</label><input v-model="writes" class="col-sm-3 form-control" type="text" name="writes" id="writes">
-          </div>
-          <div class="row form-group">
-            <label class="col-sm-6 col-form-label" for="item-size">Average item size</label><input v-model="item_size" class="col-sm-3 form-control" type="text" name="items-size" id="item-size">
-          </div>
-          <div class="row form-group"><label class="col-sm-6 col-form-label" for="storage-size">Storage set size (GB)</label><input class="col-sm-3 form-control" type="text" v-model="storage" name="storage-size" id="storage-size"></div>
-          <div class="row form-group">
-            <label class="col-sm-6 col-form-label" for="replication-factor">Replication factor</label><input v-model="replication_factor" class="col-sm-2 form-control" type="text" name="replication-factor" id="replication-factor">
-          </div>
-        </form>
-      </div>
-      <div class="row">
-        <div class="col-6">
-          <h1>ScyllaDB</h1>
-          <p>vCPUs: {{vcpus}}</p>
-          <table>
-            <thead><tr><th>Cluster type</th><th>Cost</th></tr></thead>
-            <tbody>
-              <tr>
-                <td>On demand</td>
-                <td>{{price.scylla.ondemand}}</td>
-              </tr>
-              <tr>
-                <td>Reserved (1y)</td>
-                <td>{{price.scylla.reserved}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-6">
-          <h1>DynamoDB</h1>
-        </div>
-      </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

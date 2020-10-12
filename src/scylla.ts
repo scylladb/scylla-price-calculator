@@ -1,18 +1,18 @@
-import { TupleType } from 'typescript'
+import { CloudPricing, WorkloadSpec } from './common'
 
 export enum MODE {
-    CQL,
-    LWT,
-    NoLWT
+    CQL = "CQL",
+    LWT = "LWT",
+    NoLWT = "NoLWT"
 }
 
-interface PerfModeData {
-    reads: number,
-    writes: number
+export interface PerfModeData {
+    reads: number;
+    writes: number;
 }
 
 
-let vcpuPerf: Record<MODE, PerfModeData> = {
+export const vcpuPerf: Record<MODE, PerfModeData> = {
     [MODE.CQL]: {
         reads: 6250,
         writes: 8000
@@ -27,13 +27,8 @@ let vcpuPerf: Record<MODE, PerfModeData> = {
     }
 }
 
-interface CloudPricing {
-    onDemand: number,
-    reserved: number,
-    storage?: number
-}
 
-const ScyllaCloudvCPUPricing: CloudPricing = {
+export const ScyllaCloudvCPUPricing: CloudPricing = {
     onDemand: 120,
     reserved: 77
 }
@@ -42,16 +37,14 @@ const ScyllCloudStoragePervCPU = 230
 const CompactionOverhead = 2
 
 export function estimatePrice(
-    storage: number, 
-    reads: number, 
-    writes: number,
-    _itemSize: number, 
+    workload: WorkloadSpec,
     replicationFactor: number,
     mode: MODE): CloudPricing {
-    let perf = vcpuPerf[mode]
-    let vcpus = Math.ceil(reads / perf.reads + writes / perf.writes)
-    let storageUnits = Math.ceil(storage*replicationFactor*CompactionOverhead / ScyllCloudStoragePervCPU)
-    let vcpuUnits = Math.max(vcpus, storageUnits) 
+        console.log(mode)
+    const perf = vcpuPerf[mode]
+    const vcpus = Math.ceil(workload.reads / perf.reads + workload.writes / perf.writes)
+    const storageUnits = Math.ceil(workload.storage*replicationFactor*CompactionOverhead / ScyllCloudStoragePervCPU)
+    const vcpuUnits = Math.max(vcpus, storageUnits) 
 
     return {
         onDemand: vcpuUnits*ScyllaCloudvCPUPricing.onDemand,
