@@ -9,6 +9,10 @@
             </tr>
         </thead>
         <tr>
+            <td>Storage</td>
+            <td>{{price.storage.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+        </tr>
+        <tr>
             <td>On demand</td>
             <td>{{price.onDemand.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
         </tr>
@@ -55,9 +59,10 @@ export default {
             const storagePrice = vm.workload.storage * storagePricing
 
             return {
-                onDemand: (rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) * 3600* hoursPerMonth / 1E6 + storagePrice,
-                provisioned: (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth + storagePrice,
-                reserved: (wcu * reservedPricing.wcu + rcu * reservedPricing.rcu) * hoursPerMonth + storagePrice
+                onDemand: (rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) * 3600* hoursPerMonth / 1E6,
+                provisioned: (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth,
+                reserved: (wcu * reservedPricing.wcu + rcu * reservedPricing.rcu) * hoursPerMonth,
+                storage: storagePrice
             }
         }
     }
