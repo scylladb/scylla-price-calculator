@@ -10,3 +10,5 @@ export interface CloudPricing {
     reserved: number,
     storage?: number
 }
+
+export const hoursPerMonth = 730

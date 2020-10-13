@@ -23,6 +23,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import {hoursPerMonth} from '../common'
+
 // hourly
 const provisionedPricing = {
     wcu: 0.00065,
@@ -40,7 +42,6 @@ const onDemandPricing = {
     rcu: 0.25
 }
 
-const hoursPerMonth = 730
 const storagePricing = 0.25 // GB/month
 
 export default {

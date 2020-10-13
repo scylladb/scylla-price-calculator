@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import Dropdown from './Dropdown.vue'
-import { CloudPricing, WorkloadSpec } from '../common'
+import { CloudPricing, WorkloadSpec, hoursPerMonth } from '../common'
 
 enum MODE {
     CQL = "CQL",
@@ -76,7 +76,7 @@ function estimatePrice(
     const vcpus = Math.ceil(workload.reads / perf.reads + workload.writes / perf.writes)
     const storageUnits = Math.ceil(workload.storage*replicationFactor*CompactionOverhead / ScyllCloudStoragePervCPU)
     const vcpuUnits = Math.max(vcpus, storageUnits) 
-    const replicationTraffic = workload.writes * workload.itemSize * replicationFactor / 2
+    const replicationTraffic = workload.writes * workload.itemSize * replicationFactor * 3600 * hoursPerMonth  / 2 / 1E6
 
     return {
         onDemand: vcpuUnits*ScyllaCloudvCPUPricing.onDemand,
