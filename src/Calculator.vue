@@ -9,7 +9,7 @@
                 <label class="col-sm-6 col-form-label" for="writes">Write ops/sec</label><input v-model="workload.writes" class="col-sm-3 form-control" type="text" name="writes" id="writes">
             </div>
             <div class="row form-group">
-                <label class="col-sm-6 col-form-label" for="item-size">Average item size</label><input v-model="workload.itemSize" class="col-sm-3 form-control" type="text" name="items-size" id="item-size">
+                <label class="col-sm-6 col-form-label" for="item-size">Average item size (KB)</label><input v-model="workload.itemSize" class="col-sm-3 form-control" type="text" name="items-size" id="item-size">
             </div>
             <div class="row form-group"><label class="col-sm-6 col-form-label" for="storage-size">Storage set size (GB)</label><input class="col-sm-3 form-control" type="text" v-model="workload.storage" name="storage-size" id="storage-size"></div>
             </form>
@@ -24,6 +24,9 @@
                 <dropdown :options="rivalCalcs" v-model="calc2" description="Rival offering"></dropdown>
                 <component :is="calc2" :workload="workload"></component>
             </div>
+        </div>
+        <div class="row">
+            <p><small>Prices are monthly, but reserved offering require a 1 year subscription period.</small></p>
         </div>
     </div>
 </template>
