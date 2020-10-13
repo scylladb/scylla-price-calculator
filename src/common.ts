@@ -1,14 +1,14 @@
 export interface WorkloadSpec {
-    reads: number,
-    writes: number,
-    storage: number,
-    itemSize: number
+    reads: number;
+    writes: number;
+    storage: number;
+    itemSize: number;
 }
 
 export interface CloudPricing {
-    onDemand: number,
-    reserved: number,
-    storage?: number
+    onDemand: number;
+    reserved: number;
+    storage?: number;
 }
 
 export const hoursPerMonth = 730
