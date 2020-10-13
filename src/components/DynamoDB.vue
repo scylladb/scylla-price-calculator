@@ -1,31 +1,24 @@
 <template>
-    <div class="pricing" id="dynamodb">
+    <div class="pricing container" id="dynamodb">
     <h1>DynamoDB</h1>
-    <table class="table">
-        <thead>
-            <tr>
-            <th>Type</th>
-            <th>Cost</th>
-            </tr>
-        </thead>
-        <tr>
-            <td>Storage</td>
-            <td>{{price.storage.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-        </tr>
-        <tr>
-            <td>On demand</td>
-            <td>{{price.onDemand.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-        </tr>
-        <tr>
-            <td>Provisioned</td>
-            <td>{{price.provisioned.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-        </tr>
-        <tr>
-            <td>Provisioned (reserved)</td>
-            <td>{{price.reserved.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-        </tr>
-    </table>    
-</div>    
+    <template v-for="price in prices" :key="price.id">
+        <div class="row container">
+            <a data-toggle="collapse" :href="'#dynamodb-' + price.id + '-price'" aria-expanded="false" :aria-controls="'dynamodb-' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
+            <table class="table collapse" :id="'dynamodb-' + price.id + '-price'">
+                <tbody>
+                <tr>
+                    <td>Storage</td>
+                    <td>{{price.storage.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+                </tr>
+                <tr>
+                    <td>Workload (operations)</td>
+                    <td>{{price.ops.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>        
+    </template>
+    </div>    
 </template>
 
 <script lang="ts">
@@ -53,17 +46,19 @@ const storagePricing = 0.25 // GB/month
 export default {
     props: ["workload"],
     computed: {
-        price: (vm: Vue.DefineComponent) => {
+        prices: (vm: Vue.DefineComponent) => {
             const wcu = Math.ceil(vm.workload.itemSize) * vm.workload.writes
             const rcu = Math.ceil(vm.workload.itemSize/4)*vm.workload.reads
-            const storagePrice = vm.workload.storage * storagePricing
+            const storage = vm.workload.storage * storagePricing
+            const onDemand = (rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) * 3600* hoursPerMonth / 1E6
+            const provisioned = (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth
+            const reserved = (wcu * reservedPricing.wcu + rcu * reservedPricing.rcu) * hoursPerMonth
 
-            return {
-                onDemand: (rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) * 3600* hoursPerMonth / 1E6,
-                provisioned: (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth,
-                reserved: (wcu * reservedPricing.wcu + rcu * reservedPricing.rcu) * hoursPerMonth,
-                storage: storagePrice
-            }
+            return [
+                {id: 'on-demand', name: 'On demand', total: storage + onDemand, storage, ops: onDemand},
+                {id: 'provisioned', name: 'Provisioned', total: storage + provisioned, storage, ops: provisioned},
+                {id: 'reserved', name: 'Provisioned (1y reserved)', total: storage + reserved, storage, ops: reserved}
+            ]
         }
     }
 }

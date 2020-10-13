@@ -16,17 +16,17 @@
         </div>
         <hr>
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 m-x-1">
                 <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>
                 <component :is="calc1" :workload="workload"></component>
             </div>
-            <div class="col-6">
+            <div class="col-6 m-x-1">
                 <dropdown :options="rivalCalcs" v-model="calc2" description="Rival offering"></dropdown>
                 <component :is="calc2" :workload="workload"></component>
             </div>
         </div>
         <div class="row">
-            <p><small>Prices are monthly, but reserved offering require a 1 year subscription period.</small></p>
+            <p><small>Prices are monthly, but reserved offerings require a 1 year subscription period.</small></p>
         </div>
     </div>
 </template>
