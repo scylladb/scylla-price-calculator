@@ -8,19 +8,23 @@
     <table class="table">
         <thead>
             <tr>
-            <th>Cluster type</th>
+            <th>Type</th>
             <th>Cost</th>
             </tr>
         </thead>
         <tr>
-            <td>On demand</td>
+            <td>Cross AZ data transfer</td>
+            <td>{{price.dataTransfer.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+        </tr>
+        <tr>
+            <td>On demand nodes</td>
             <td>{{price.onDemand.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
         </tr>
         <tr>
-            <td>Reserved</td>
+            <td>Reserved nodes</td>
             <td>{{price.reserved.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
         </tr>
-    </table>    
+    </table>
 </div>    
 </template>
 
@@ -62,22 +66,26 @@ const ScyllaCloudvCPUPricing: CloudPricing = {
     reserved: 77
 }
 
+const AWSDataTransfer = 0.01 // GB/month
+
 const ScyllCloudStoragePervCPU = 230
 const CompactionOverhead = 2
 
 function estimatePrice(
     workload: WorkloadSpec,
     replicationFactor: number,
-    mode: MODE): CloudPricing {
+    mode: MODE) {
         console.log(mode)
     const perf = vcpuPerf[mode]
     const vcpus = Math.ceil(workload.reads / perf.reads + workload.writes / perf.writes)
     const storageUnits = Math.ceil(workload.storage*replicationFactor*CompactionOverhead / ScyllCloudStoragePervCPU)
     const vcpuUnits = Math.max(vcpus, storageUnits) 
+    const replicationTraffic = workload.writes * workload.itemSize * replicationFactor / 2
 
     return {
         onDemand: vcpuUnits*ScyllaCloudvCPUPricing.onDemand,
-        reserved: vcpuUnits*ScyllaCloudvCPUPricing.reserved 
+        reserved: vcpuUnits*ScyllaCloudvCPUPricing.reserved,
+        dataTransfer: replicationTraffic * AWSDataTransfer
     }
 }
 
@@ -101,7 +109,7 @@ export default {
         dropdown: Dropdown
     },
     computed: {
-        price: (vm: Vue.DefineComponent): CloudPricing => {
+        price: (vm: Vue.DefineComponent) => {
             return estimatePrice(vm.workload, vm.replicationFactor, vm.mode)
         }
     }
