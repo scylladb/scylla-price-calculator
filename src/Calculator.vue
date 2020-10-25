@@ -33,22 +33,25 @@
 
 <script lang="ts">
 import ScyllaCloud from './components/ScyllaCloud.vue'
-import DyanamoDB from './components/DynamoDB.vue'
+import DynamoDB from './components/DynamoDB.vue'
+import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
+
 export default {
     data() {
         return {
-            scyllaCalcs: {"Scylla cloud" :"scylla-cloud"},
-            rivalCalcs: {"DynamoDB": "dynamodb"},
+            scyllaCalcs: {'Scylla cloud': 'ScyllaCloud'},
+            rivalCalcs: {'DynamoDB': 'DynamoDB', 'Keyspaces': 'keyspaces'},
             workload: {writes: 10000, reads: 50000, storage: 200, itemSize: 1},
-            calc1: 'scylla-cloud',
-            calc2: 'dynamodb'
+            calc1: 'ScyllaCloud',
+            calc2: 'DynamoDB'
         }
     },
     components: {
-        'scylla-cloud': ScyllaCloud,
-        'dynamodb': DyanamoDB,
-        'dropdown': Dropdown
+        ScyllaCloud,
+        DynamoDB,
+        Keyspaces,
+        Dropdown
     }
 }
 </script>
