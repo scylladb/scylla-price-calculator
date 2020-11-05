@@ -5,10 +5,4 @@ export interface WorkloadSpec {
     itemSize: number;
 }
 
-export interface CloudPricing {
-    onDemand: number;
-    reserved: number;
-    storage?: number;
-}
-
 export const hoursPerMonth = 730

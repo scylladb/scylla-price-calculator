@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "lodash": "^4.17.20",
     "typescript": "^4.0.3",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.164",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -27,8 +29,7 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "typescript": "~3.9.3"
   },
-  "vue": {
-  },
+  "vue": {},
   "eslintConfig": {
     "root": true,
     "env": {
