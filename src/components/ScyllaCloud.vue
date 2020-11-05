@@ -144,6 +144,18 @@ function reservedPrice(cluster: ClusterSpec): MonthlyPrice {
     return cluster.nodes * cluster.instanceType.reservedPrice
 }
 
+function itemSizePerfFactor(itemSize: number): number {
+    if (itemSize <= 10) {
+        return 1
+    } else if (itemSize < 100) {
+        return 0.75
+    } else if (itemSize < 1000) {
+        return 0.5
+    } else {
+        return 0.25
+    }
+}
+
 /* Cluster size recommendations based on the optimization target:
 - performance (CPU) - select nodes with enough storage and max cpu
 - storage - select nodes with enough cpu and max storage
@@ -189,7 +201,7 @@ export default {
             const workload: WorkloadSpec = vm.workload
             const replicationFactor = vm.replicationFactor
             const perf = vcpuPerf[vm.mode as MODE]
-            const vcpus = Math.ceil((workload.reads / perf.reads + workload.writes / perf.writes)*replicationFactor)
+            const vcpus = Math.ceil((workload.reads / perf.reads + workload.writes / perf.writes)*replicationFactor*itemSizePerfFactor(workload.itemSize))
             const memory = Math.ceil(workload.storage / RAMtoDiskRatio)*replicationFactor
             const storage = workload.storage * replicationFactor * CompactionOverhead
 
@@ -217,9 +229,6 @@ export default {
 }
 
 /* TODO: 
-1. RF readonly
-2. CQL only
-3. emphasize small nodes
 4. show peak workload capability 
 */
 </script>

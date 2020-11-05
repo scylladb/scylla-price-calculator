@@ -1,4 +1,7 @@
-# price-calculators
+# Scylla price calculator
+
+## Scylla workload estimation and cluster selection
+
 
 ## Project setup
 ```
