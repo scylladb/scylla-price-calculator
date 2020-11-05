@@ -233,7 +233,7 @@ export default {
             const workload: WorkloadSpec = vm.workload
             const replicationFactor = vm.replicationFactor
             const perf = vcpuPerf[vm.mode as MODE]
-            const vcpus = Math.ceil((workload.reads / perf.reads + workload.writes / perf.writes)*replicationFactor*itemSizePerfFactor(workload.itemSize))
+            const vcpus = Math.ceil((workload.reads / perf.reads + workload.writes / perf.writes)*replicationFactor/itemSizePerfFactor(workload.itemSize))
             const memory = Math.ceil(workload.storage / RAMtoDiskRatio)*replicationFactor
             const storage = workload.storage * replicationFactor * CompactionOverhead
             return {vcpu: vcpus, storage, memory}
@@ -246,7 +246,7 @@ export default {
             const perf = vcpuPerf[vm.mode as MODE]
             const totalResources = clusterResources(cluster)
             const dataset = totalResources.storage / vm.replicationFactor / CompactionOverhead  
-            const sustainedLoad = totalResources.vcpu * (perf.writes + perf.reads)/2
+            const sustainedLoad = totalResources.vcpu * (perf.writes + perf.reads)/2 / vm.replicationFactor
             const peakLoad = sustainedLoad * 1.5
 
             return {sustainedLoad, peakLoad, dataset, ...totalResources}
@@ -255,7 +255,7 @@ export default {
             const workload: WorkloadSpec = vm.workload
             const replicationFactor = vm.replicationFactor
             // currently, Scylla requires each replica to be in a different AZ
-            const replicationTraffic = (workload.reads + workload.writes)*workload.itemSize*replicationFactor / 1E6
+            const replicationTraffic = (workload.reads + workload.writes)*workload.itemSize*(replicationFactor - 1) / 1E6
             const dataTransfer = replicationTraffic * AWSDataTransferPrice
             const cluster: ClusterSpec = vm.cluster!
             const onDemand = toMonthlyPrice(ondemandPrice(cluster))
