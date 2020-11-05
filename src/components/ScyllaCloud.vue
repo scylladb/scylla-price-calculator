@@ -24,23 +24,47 @@
         </div>
     </div>
     </template>
-    <h3>Cluster specs</h3>
-    <table class="table">
-        <tbody>
-            <tr>
-                <td>Nodes</td>
-                <td>{{cluster.nodes}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu}} vCPUs, {{cluster.instanceType.memory}}GB RAM, {{cluster.instanceType.storage}}GB storage)</small></td>
-            </tr>
-            <tr>
-                <td>Total raw storage</td>
-                <td>{{cluster.nodes * cluster.instanceType.storage}}GB</td>
-            </tr>
-            <tr>
-                <td>Total vCPU</td>
-                <td>{{cluster.nodes * cluster.instanceType.vcpu}}</td>
-            </tr>
-        </tbody>
-    </table>            
+    <div class="card">
+        <div class="card-header">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#scylla-details" aria-expanded="true" aria-controls="scylla-details">More details</button>
+        </div>
+        <div class="collapse" id="scylla-details">
+            <h3>Cluster capacity</h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Storage (post replication)</td>
+                        <td>{{clusterCapacity.dataset.toLocaleString()}} GB</td>
+                    </tr>
+                    <tr>
+                        <td>Sustained throughput</td>
+                        <td>{{clusterCapacity.sustainedLoad.toLocaleString()}} ops/sec</td>
+                    </tr>
+                    <tr>
+                        <td>Peak throughput</td>
+                        <td>{{clusterCapacity.peakLoad.toLocaleString()}} ops/sec</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Cluster specs</h3>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Nodes</td>
+                        <td>{{cluster.nodes}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu.toLocaleString()}} vCPUs, {{cluster.instanceType.memory.toLocaleString()}}GB RAM, {{cluster.instanceType.storage.toLocaleString()}}GB storage)</small></td>
+                    </tr>
+                    <tr>
+                        <td>Total raw storage</td>
+                        <td>{{clusterCapacity.storage.toLocaleString()}}GB</td>
+                    </tr>
+                    <tr>
+                        <td>Total vCPU</td>
+                        <td>{{clusterCapacity.vcpu.toLocaleString()}}</td>
+                    </tr>
+                </tbody>
+            </table>            
+        </div>
+    </div>
 </div>    
 </template>
 
@@ -144,6 +168,14 @@ function reservedPrice(cluster: ClusterSpec): MonthlyPrice {
     return cluster.nodes * cluster.instanceType.reservedPrice
 }
 
+function toMonthlyPrice(price: HourlyPrice): MonthlyPrice {
+    return price * hoursPerMonth
+}
+
+function clusterResources(cluster: ClusterSpec): ResourceSpec {
+    return {storage: cluster.instanceType.storage*cluster.nodes, vcpu: cluster.instanceType.vcpu*cluster.nodes, memory:cluster.instanceType.memory*cluster.nodes}
+}
+
 function itemSizePerfFactor(itemSize: number): number {
     if (itemSize <= 10) {
         return 1
@@ -204,11 +236,20 @@ export default {
             const vcpus = Math.ceil((workload.reads / perf.reads + workload.writes / perf.writes)*replicationFactor*itemSizePerfFactor(workload.itemSize))
             const memory = Math.ceil(workload.storage / RAMtoDiskRatio)*replicationFactor
             const storage = workload.storage * replicationFactor * CompactionOverhead
-
             return {vcpu: vcpus, storage, memory}
         },
         cluster: (vm: Vue.DefineComponent): ClusterSpec | undefined => {
             return selectClusterInstances(vm.estimatedResources, vm.replicationFactor, vm.optimizeFor)
+        },
+        clusterCapacity: (vm: Vue.DefineComponent) => {
+            const cluster: ClusterSpec = vm.cluster
+            const perf = vcpuPerf[vm.mode as MODE]
+            const totalResources = clusterResources(cluster)
+            const dataset = totalResources.storage / vm.replicationFactor / CompactionOverhead  
+            const sustainedLoad = totalResources.vcpu * (perf.writes + perf.reads)/2
+            const peakLoad = sustainedLoad * 1.5
+
+            return {sustainedLoad, peakLoad, dataset, ...totalResources}
         },
         prices: (vm: Vue.DefineComponent) => {
             const workload: WorkloadSpec = vm.workload
@@ -217,7 +258,7 @@ export default {
             const replicationTraffic = (workload.reads + workload.writes)*workload.itemSize*replicationFactor / 1E6
             const dataTransfer = replicationTraffic * AWSDataTransferPrice
             const cluster: ClusterSpec = vm.cluster!
-            const onDemand = ondemandPrice(cluster)*hoursPerMonth
+            const onDemand = toMonthlyPrice(ondemandPrice(cluster))
             const reserved = reservedPrice(cluster)
 
             return [
