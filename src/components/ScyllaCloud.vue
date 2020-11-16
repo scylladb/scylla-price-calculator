@@ -94,7 +94,7 @@ export interface PerfModeData {
 const vcpuPerf: Record<MODE, PerfModeData> = {
     [MODE.CQL]: {
         reads: 6250,
-        writes: 8000
+        writes: 6250
     },
     [MODE.LWT]: {
         writes: 1200,
@@ -200,13 +200,13 @@ function selectClusterInstances<K extends keyof Instance>(specs: ResourceSpec, r
 
     for (const n of _.range(replicationFactor, 100*replicationFactor, replicationFactor)) {
         for (const instanceType of instances) {
-            if (instanceType.vcpu * n > specs.vcpu && instanceType.memory * n > specs.memory && instanceType.storage * n > specs.storage) {
+            if (instanceType.vcpu * n >= specs.vcpu && instanceType.memory * n >= specs.memory && instanceType.storage * n >= specs.storage) {
                 validSpecs.push({instanceType, nodes: n})
             }
         }
     }
 
-    const lowestPrice = _.chain(validSpecs).map(ondemandPrice).sort().head().value()
+    const lowestPrice = _.chain(validSpecs).map(ondemandPrice).min().value()
     const x = _.chain(validSpecs).filter()
 
     return _.chain(validSpecs)
