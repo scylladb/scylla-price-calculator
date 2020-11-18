@@ -36,12 +36,13 @@ import ScyllaCloud from './components/ScyllaCloud.vue'
 import DynamoDB from './components/DynamoDB.vue'
 import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
+import Astra from './components/Astra.vue'
 
 export default {
     data() {
         return {
             scyllaCalcs: {'Scylla cloud': 'ScyllaCloud'},
-            rivalCalcs: {'DynamoDB': 'DynamoDB', 'Keyspaces': 'keyspaces'},
+            rivalCalcs: {'DynamoDB': 'DynamoDB', 'Keyspaces': 'keyspaces', 'Astra': 'Astra'},
             workload: {writes: 10000, reads: 50000, storage: 200, itemSize: 1},
             calc1: 'ScyllaCloud',
             calc2: 'DynamoDB'
@@ -51,6 +52,7 @@ export default {
         ScyllaCloud,
         DynamoDB,
         Keyspaces,
+        Astra,
         Dropdown
     }
 }
