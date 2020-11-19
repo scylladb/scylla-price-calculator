@@ -46,7 +46,7 @@ import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
 import Astra from './components/Astra.vue'
 import _ from 'lodash'
-import {defineComponent} from 'vue'
+import {ComponentPublicInstance, defineComponent} from 'vue'
 
 export default defineComponent({
     data() {
@@ -79,6 +79,10 @@ export default defineComponent({
         const query = new URLSearchParams(window.location.search)
         const getParam = (param: string, defaultValue: number) => _.toNumber(query.get(param) ?? defaultValue)
         this.workload = _.mapValues(this.workload, (v, k) => getParam(k, v))
+    },
+    errorCaptured(err: unknown, instance: ComponentPublicInstance | null, info: string): boolean {
+        console.error("Error occurred in Astra component " + err)
+        return false
     }
 })
 </script>

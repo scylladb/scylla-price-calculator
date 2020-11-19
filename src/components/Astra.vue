@@ -5,63 +5,68 @@
         <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>
         <dropdown v-model="tier" :options="tiers.concat('AUTOSELECT')" description="Tier"></dropdown>
     </form>
-    <template v-for="price in prices" :key="price.id">
-    <div class="row container">
-        <a data-toggle="collapse" :href="'#astra-' + price.id + '-price'" aria-expanded="false" :aria-controls="'astra' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
-        <div class="collapse" :id="'astra-' + price.id + '-price'">
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Cluster nodes</td>
-                        <td>{{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-                    </tr>
-                </tbody>
-            </table>
+    <template v-if="cluster">
+        <template v-for="price in prices" :key="price.id">
+        <div class="row container">
+            <a data-toggle="collapse" :href="'#astra-' + price.id + '-price'" aria-expanded="false" :aria-controls="'astra' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
+            <div class="collapse" :id="'astra-' + price.id + '-price'">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Cluster nodes</td>
+                            <td>{{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+        </template>
+        <div class="card">
+            <div class="card-header">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#astra-details" aria-expanded="true" aria-controls="astra-details">More details</button>
+            </div>
+            <div class="collapse" id="astra-details">
+                <h3>Cluster capacity</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Storage (post replication)</td>
+                            <td>{{clusterCapacity.dataset.toLocaleString()}} GB</td>
+                        </tr>
+                        <tr>
+                            <td>Sustained throughput</td>
+                            <td>{{clusterCapacity.sustainedLoad.toLocaleString()}} ops/sec</td>
+                        </tr>
+                        <tr>
+                            <td>Peak throughput</td>
+                            <td>{{clusterCapacity.peakLoad.toLocaleString()}} ops/sec</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Cluster specs</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Capacity units</td>
+                            <td>{{cluster.capacityUnits}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu.toLocaleString()}} vCPUs, {{cluster.instanceType.memory.toLocaleString()}}GB RAM, {{cluster.instanceType.storage.toLocaleString()}}GB storage)</small></td>
+                        </tr>
+                        <tr>
+                            <td>Total vCPU</td>
+                            <td>{{clusterCapacity.vcpu.toLocaleString()}}</td>
+                        </tr>
+                    </tbody>
+                </table>            
+            </div>
+        </div>
     </template>
-    <div class="card">
-        <div class="card-header">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#astra-details" aria-expanded="true" aria-controls="astra-details">More details</button>
-        </div>
-        <div class="collapse" id="astra-details">
-            <h3>Cluster capacity</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Storage (post replication)</td>
-                        <td>{{clusterCapacity.dataset.toLocaleString()}} GB</td>
-                    </tr>
-                    <tr>
-                        <td>Sustained throughput</td>
-                        <td>{{clusterCapacity.sustainedLoad.toLocaleString()}} ops/sec</td>
-                    </tr>
-                    <tr>
-                        <td>Peak throughput</td>
-                        <td>{{clusterCapacity.peakLoad.toLocaleString()}} ops/sec</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3>Cluster specs</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Capacity units</td>
-                        <td>{{cluster.capacityUnits}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu.toLocaleString()}} vCPUs, {{cluster.instanceType.memory.toLocaleString()}}GB RAM, {{cluster.instanceType.storage.toLocaleString()}}GB storage)</small></td>
-                    </tr>
-                    <tr>
-                        <td>Total vCPU</td>
-                        <td>{{clusterCapacity.vcpu.toLocaleString()}}</td>
-                    </tr>
-                </tbody>
-            </table>            
-        </div>
+    <div class="alert alert-warning" v-else>
+        <p>Could not find suitable configuration</p>
     </div>
 </div>    
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import {defineComponent, DefineComponent, h} from 'vue'
 import Dropdown from './Dropdown.vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
 import _ from 'lodash'
@@ -141,7 +146,7 @@ function itemSizePerfFactor(itemSize: number): number {
 function selectClusterInstances(specs: ResourceSpec, replicationFactor: number, tier: string): ClusterSpec | undefined {
     const validSpecs: ClusterSpec[] = []
 
-    for (const n of _.range(replicationFactor, 100*replicationFactor, replicationFactor)) {
+    for (const n of _.range(1, 500)) {
         for (const instanceType of instanceTypes) {
             if ((tier == 'AUTOSELECT' && instanceType.vcpu * n > specs.vcpu && instanceType.memory * n > specs.memory && instanceType.storage * n > specs.storage) 
                 ||
@@ -169,7 +174,7 @@ const data = {
     tiers: instanceTypes.map(({name}) => name)
 }
 
-export default {
+export default defineComponent({
     data() {
         return data
     },
@@ -178,17 +183,17 @@ export default {
         dropdown: Dropdown
     },
     computed: {
-        estimatedResources: (vm: Vue.DefineComponent) => {
+        estimatedResources: (vm: DefineComponent) => {
             const workload: WorkloadSpec = vm.workload
             const replicationFactor = vm.replicationFactor
             const vcpus = Math.ceil((workload.reads / vcpuPerf.reads + workload.writes / vcpuPerf.writes)*replicationFactor/itemSizePerfFactor(workload.itemSize))
             const memory = Math.ceil(workload.storage / RAMtoDiskRatio)*replicationFactor
             return {vcpu: vcpus, storage: workload.storage, memory}
         },
-        cluster: (vm: Vue.DefineComponent): ClusterSpec | undefined => {
+        cluster: (vm: DefineComponent): ClusterSpec | undefined => {
             return selectClusterInstances(vm.estimatedResources, vm.replicationFactor, vm.tier)
         },
-        clusterCapacity: (vm: Vue.DefineComponent) => {
+        clusterCapacity: (vm: DefineComponent) => {
             const cluster: ClusterSpec = vm.cluster
             const totalResources = clusterResources(cluster)
             const dataset = totalResources.storage
@@ -197,7 +202,7 @@ export default {
 
             return {sustainedLoad, peakLoad, dataset, ...totalResources}
         },
-        prices: (vm: Vue.DefineComponent) => {
+        prices: (vm: DefineComponent) => {
             const workload: WorkloadSpec = vm.workload
             const replicationFactor = vm.replicationFactor
             const cluster: ClusterSpec = vm.cluster!
@@ -207,8 +212,16 @@ export default {
                 {id: 'ondemand', name: 'On demand', total: price}
             ]
         }
+    },
+    render() {
+        console.log("render")
+        if (_.isEmpty(this.cluster)) {
+           return h('p', 'No suitable cluster could be slected')
+        } else {
+            return this.$slots.default
+        }
     }
-}
+})
 
 /* TODO: 
 4. show peak workload capability 

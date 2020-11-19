@@ -1,69 +1,74 @@
 <template>
-<div class="pricing container" id="scylla-cloud">
-    <h1>Scylla cloud</h1>
-    <form>
-        <!-- <dropdown v-model="mode" :options="modes" description="Mode"></dropdown> -->
-        <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>
-    </form>
-    <template v-for="price in prices" :key="price.id">
-    <div class="row container">
-        <a data-toggle="collapse" :href="'#scylla-' + price.id + '-price'" aria-expanded="false" :aria-controls="'scylla' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
-        <div class="collapse" :id="'scylla-' + price.id + '-price'">
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Cross AZ data transfer (replication)</td>
-                        <td>{{price.dataTransfer.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-                    </tr>
-                    <tr>
-                        <td>Cluster nodes</td>
-                        <td>{{price.compute.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="pricing container" id="scylla-cloud">
+        <h1>Scylla cloud</h1>
+        <form>
+            <!-- <dropdown v-model="mode" :options="modes" description="Mode"></dropdown> -->
+            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>
+        </form>
+        <template v-if="cluster">
+        <template v-for="price in prices" :key="price.id">
+        <div class="row container">
+            <a data-toggle="collapse" :href="'#scylla-' + price.id + '-price'" aria-expanded="false" :aria-controls="'scylla' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
+            <div class="collapse" :id="'scylla-' + price.id + '-price'">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Cross AZ data transfer (replication)</td>
+                            <td>{{price.dataTransfer.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+                        </tr>
+                        <tr>
+                            <td>Cluster nodes</td>
+                            <td>{{price.compute.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+        </template>
+        <div class="card">
+            <div class="card-header">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#scylla-details" aria-expanded="true" aria-controls="scylla-details">More details</button>
+            </div>
+            <div class="collapse" id="scylla-details">
+                <h3>Cluster capacity</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Storage (post replication)</td>
+                            <td>{{clusterCapacity.dataset.toLocaleString()}} GB</td>
+                        </tr>
+                        <tr>
+                            <td>Sustained throughput</td>
+                            <td>{{clusterCapacity.sustainedLoad.toLocaleString()}} ops/sec</td>
+                        </tr>
+                        <tr>
+                            <td>Peak throughput</td>
+                            <td>{{clusterCapacity.peakLoad.toLocaleString()}} ops/sec</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>Cluster specs</h3>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Nodes</td>
+                            <td>{{cluster.nodes}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu.toLocaleString()}} vCPUs, {{cluster.instanceType.memory.toLocaleString()}}GB RAM, {{cluster.instanceType.storage.toLocaleString()}}GB storage)</small></td>
+                        </tr>
+                        <tr>
+                            <td>Total raw storage</td>
+                            <td>{{clusterCapacity.storage.toLocaleString()}}GB</td>
+                        </tr>
+                        <tr>
+                            <td>Total vCPU</td>
+                            <td>{{clusterCapacity.vcpu.toLocaleString()}}</td>
+                        </tr>
+                    </tbody>
+                </table>            
+            </div>
+        </div>
     </template>
-    <div class="card">
-        <div class="card-header">
-            <button class="btn btn-link" data-toggle="collapse" data-target="#scylla-details" aria-expanded="true" aria-controls="scylla-details">More details</button>
-        </div>
-        <div class="collapse" id="scylla-details">
-            <h3>Cluster capacity</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Storage (post replication)</td>
-                        <td>{{clusterCapacity.dataset.toLocaleString()}} GB</td>
-                    </tr>
-                    <tr>
-                        <td>Sustained throughput</td>
-                        <td>{{clusterCapacity.sustainedLoad.toLocaleString()}} ops/sec</td>
-                    </tr>
-                    <tr>
-                        <td>Peak throughput</td>
-                        <td>{{clusterCapacity.peakLoad.toLocaleString()}} ops/sec</td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3>Cluster specs</h3>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Nodes</td>
-                        <td>{{cluster.nodes}} x {{cluster.instanceType.name}} <small>({{cluster.instanceType.vcpu.toLocaleString()}} vCPUs, {{cluster.instanceType.memory.toLocaleString()}}GB RAM, {{cluster.instanceType.storage.toLocaleString()}}GB storage)</small></td>
-                    </tr>
-                    <tr>
-                        <td>Total raw storage</td>
-                        <td>{{clusterCapacity.storage.toLocaleString()}}GB</td>
-                    </tr>
-                    <tr>
-                        <td>Total vCPU</td>
-                        <td>{{clusterCapacity.vcpu.toLocaleString()}}</td>
-                    </tr>
-                </tbody>
-            </table>            
-        </div>
+    <div v-else class="alert alert-warning">
+        Could not find suitable configuration
     </div>
 </div>    
 </template>
