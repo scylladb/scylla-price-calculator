@@ -93,8 +93,8 @@ export interface PerfModeData {
 
 const vcpuPerf: Record<MODE, PerfModeData> = {
     [MODE.CQL]: {
-        reads: 6250,
-        writes: 6250
+        reads: 8000,
+        writes: 10000
     },
     [MODE.LWT]: {
         writes: 1200,
@@ -246,8 +246,8 @@ export default {
             const perf = vcpuPerf[vm.mode as MODE]
             const totalResources = clusterResources(cluster)
             const dataset = totalResources.storage / vm.replicationFactor / CompactionOverhead  
-            const sustainedLoad = totalResources.vcpu * (perf.writes + perf.reads)/2 / vm.replicationFactor
-            const peakLoad = sustainedLoad * 1.5
+            const peakLoad = totalResources.vcpu * (perf.writes + perf.reads)/2 / vm.replicationFactor
+            const sustainedLoad = peakLoad * 0.66
 
             return {sustainedLoad, peakLoad, dataset, ...totalResources}
         },

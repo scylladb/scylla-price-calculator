@@ -192,8 +192,8 @@ export default {
             const cluster: ClusterSpec = vm.cluster
             const totalResources = clusterResources(cluster)
             const dataset = totalResources.storage
-            const sustainedLoad = totalResources.vcpu * (vcpuPerf.writes + vcpuPerf.reads)/2 / vm.replicationFactor
-            const peakLoad = sustainedLoad * 1.5
+            const peakLoad = totalResources.vcpu * (vcpuPerf.writes + vcpuPerf.reads)/2 / vm.replicationFactor
+            const sustainedLoad = peakLoad * 0.66
 
             return {sustainedLoad, peakLoad, dataset, ...totalResources}
         },
