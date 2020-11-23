@@ -1,18 +1,23 @@
 <template>
     <div>
         <div class="row">
-            <form>
-            <div class="row form-group">
-                <label class="col-sm-6 col-form-label" for="reads">Read ops/sec</label><input v-model="workload.reads" class="col-sm-3 form-control" type="number" name="reads" id="reads">
+            <div class="col-6">
+                <form>
+                    <div class="row form-group">
+                        <label class="col-sm-6 col-form-label" for="reads">Read ops/sec</label><input v-model="workload.reads" class="col-sm-3 form-control" type="number" name="reads" id="reads">
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-sm-6 col-form-label" for="writes">Write ops/sec</label><input v-model="workload.writes" class="col-sm-3 form-control" type="number" name="writes" id="writes">
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-sm-6 col-form-label" for="item-size">Average item size (KB)</label><input v-model="workload.itemSize" class="col-sm-3 form-control" type="number" name="items-size" id="item-size">
+                    </div>
+                    <div class="row form-group"><label class="col-sm-6 col-form-label" for="storage-size">Storage set size (GB)</label><input class="col-sm-3 form-control" type="number" v-model="workload.storage" name="storage-size" id="storage-size"></div>
+                </form>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-6 col-form-label" for="writes">Write ops/sec</label><input v-model="workload.writes" class="col-sm-3 form-control" type="number" name="writes" id="writes">
+            <div class="col-6">
+                <Chart chartId="price-comparison" :data="prices"></Chart>
             </div>
-            <div class="row form-group">
-                <label class="col-sm-6 col-form-label" for="item-size">Average item size (KB)</label><input v-model="workload.itemSize" class="col-sm-3 form-control" type="number" name="items-size" id="item-size">
-            </div>
-            <div class="row form-group"><label class="col-sm-6 col-form-label" for="storage-size">Storage set size (GB)</label><input class="col-sm-3 form-control" type="number" v-model="workload.storage" name="storage-size" id="storage-size"></div>
-            </form>
         </div>
         <div class="row">
             <button class="btn" @click="copyLink()">Permalink
@@ -26,11 +31,11 @@
         <div class="row">
             <div class="col-6 m-x-1">
                 <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>
-                <component :is="calc1" :workload="workload"></component>
+                <component :is="calc1" :workload="workload" v-model="scyllaPrices"></component>
             </div>
             <div class="col-6 m-x-1">
                 <dropdown :options="rivalCalcs" v-model="calc2" description="Rival offering"></dropdown>
-                <component :is="calc2" :workload="workload"></component>
+                <component :is="calc2" :workload="workload" v-model="rivalPrices"></component>
             </div>
         </div>
         <div class="row">
@@ -46,7 +51,8 @@ import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
 import Astra from './components/Astra.vue'
 import _ from 'lodash'
-import {ComponentPublicInstance, defineComponent} from 'vue'
+import {ComponentPublicInstance, DefineComponent, defineComponent} from 'vue'
+import Chart from './components/Chart.vue'
 
 export default defineComponent({
     data() {
@@ -55,7 +61,9 @@ export default defineComponent({
             rivalCalcs: {'DynamoDB': 'DynamoDB', 'Keyspaces': 'keyspaces', 'Astra': 'Astra'},
             workload: {writes: 10000, reads: 50000, storage: 200, itemSize: 1},
             calc1: 'ScyllaCloud',
-            calc2: 'DynamoDB'
+            calc2: 'DynamoDB',
+            scyllaPrices: [],
+            rivalPrices: []
         }
     },
     components: {
@@ -63,7 +71,8 @@ export default defineComponent({
         DynamoDB,
         Keyspaces,
         Astra,
-        Dropdown
+        Dropdown,
+        Chart
     },
     methods: {
         copyLink() {
@@ -83,6 +92,20 @@ export default defineComponent({
     errorCaptured(err: unknown, instance: ComponentPublicInstance | null, info: string): boolean {
         console.error("Error occurred in Astra component " + err)
         return false
+    },
+    computed: {
+        prices(vm: DefineComponent) {
+            const _prices: [string, number][] = []
+            for (const price of vm.scyllaPrices) {
+                const key: string = 'Scylla ' + price.name
+                _prices.push([key, price.total])
+            }
+
+            for (const price of vm.rivalPrices) {
+                _prices.push([price.database + ' ' + price.name, price.total])
+            }
+            return _prices
+        }
     }
 })
 </script>

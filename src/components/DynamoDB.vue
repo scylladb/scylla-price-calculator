@@ -4,7 +4,7 @@
     <template v-for="price in prices" :key="price.id">
         <div class="row container">
             <a data-toggle="collapse" :href="'#dynamodb-' + price.id + '-price'" aria-expanded="false" :aria-controls="'dynamodb-' + price.id + '-price'">{{price.name}}: {{price.total.toLocaleString(undefined, {style: 'currency', currency: 'USD'})}}</a>
-            <table class="table collapse" :id="'dynamodb-' + price.id + '-price'">
+            <table class="table collapse" :id="price.id + '-price'">
                 <tbody>
                 <tr>
                     <td>Storage</td>
@@ -55,11 +55,15 @@ export default {
             const provisioned = (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth
             const reserved = (wcu * reservedPricing.wcu + rcu * reservedPricing.rcu) * hoursPerMonth
 
-            return [
-                {id: 'on-demand', name: 'On demand', total: storage + onDemand, storage, ops: onDemand},
-                {id: 'provisioned', name: 'Provisioned', total: storage + provisioned, storage, ops: provisioned},
-                {id: 'reserved', name: 'Provisioned (1y reserved)', total: storage + reserved, storage, ops: reserved}
+            const _prices = [
+                {id: 'dynamodb-on-demand', name: 'On demand', total: storage + onDemand, storage, ops: onDemand, database: 'DynamoDB'},
+                {id: 'dynamodb-provisioned', name: 'Provisioned', total: storage + provisioned, storage, ops: provisioned, database: 'DynamoDB'},
+                {id: 'dynamodb-reserved', name: 'Provisioned (1y reserved)', total: storage + reserved, storage, ops: reserved, database: 'DynamoDB'}
             ]
+
+            vm.$emit('update:modelValue', _prices)
+
+            return _prices
         }
     }
 }

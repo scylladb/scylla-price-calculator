@@ -208,9 +208,12 @@ export default defineComponent({
             const cluster: ClusterSpec = vm.cluster!
             const price = clusterPrice(cluster)
 
-            return [
-                {id: 'ondemand', name: 'On demand', total: price}
+            const _prices = [
+                {id: 'ondemand', name: 'On demand', total: price, database: 'Astra'}
             ]
+
+            vm.$emit('update:modelValue', _prices)
+            return _prices
         }
     },
     render() {

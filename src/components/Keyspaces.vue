@@ -49,10 +49,13 @@ export default {
             const onDemand = (rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) * 3600* hoursPerMonth / 1E6
             const provisioned = (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) * hoursPerMonth
 
-            return [
-                {id: 'on-demand', name: 'On demand', total: storage + onDemand, storage, ops: onDemand},
-                {id: 'provisioned', name: 'Provisioned', total: storage + provisioned, storage, ops: provisioned},
+            const _prices = [
+                {id: 'on-demand', name: 'On demand', total: storage + onDemand, storage, ops: onDemand, database: 'Keyspaces'},
+                {id: 'provisioned', name: 'Provisioned', total: storage + provisioned, storage, ops: provisioned, database: 'Keyspaces'},
             ]
+
+            vm.$emit('update:modelValue', _prices)
+            return _prices
         }
     }
 }

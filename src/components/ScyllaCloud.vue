@@ -265,11 +265,13 @@ export default {
             const cluster: ClusterSpec = vm.cluster!
             const onDemand = toMonthlyPrice(ondemandPrice(cluster))
             const reserved = reservedPrice(cluster)
-
-            return [
+            const prices = [
                 {id: 'ondemand', name: 'On demand', compute: onDemand, dataTransfer, total: onDemand + dataTransfer},
                 {id: 'reserved', name: 'Reserved', compute: reserved, dataTransfer, total: reserved + dataTransfer}
             ]
+            vm.$emit('update:modelValue', prices)
+
+            return prices
         }
     }
 }
