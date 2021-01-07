@@ -6,61 +6,59 @@
     <!--            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>-->
     <!--        </form>-->
     <template v-if="cluster">
-      <template v-for="price in prices" :key="price.id">
-        <div>
-          <div class="price-name text-capitalize">{{ price.name }}:</div>
-          <div class="price d-inline-block">
-            <small>$</small>
-            {{
-              price.total.toLocaleString(undefined, {
-                maximumFractionDigits: 2
-              })
-            }}
-          </div>
-          <button
-            class="btn btn-link"
-            data-toggle="collapse"
-            data-target="#scylla-details"
-            aria-expanded="true"
-            aria-controls="scylla-details"
-          >
-            Details
-          </button>
-          <div class="collapse" id="scylla-details">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td>No Commitment!</td>
-                </tr>
-                <tr>
-                  <td>Cross AZ data transfer (replication)</td>
-                  <td>
-                    <strong>
-                      ${{
-                        price.dataTransfer.toLocaleString(undefined, {
-                          maximumFractionDigits: 2
-                        })
-                      }}
-                    </strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Cluster nodes</td>
-                  <td>
-                    <strong>
-                      ${{
-                        price.compute.toLocaleString(undefined, {
-                          maximumFractionDigits: 2
-                        })
-                      }}
-                    </strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <div>
+        <div class="price-name text-capitalize">{{ selectedPrice.name }}:</div>
+        <div class="price d-inline-block">
+          <small>$</small>
+          {{
+            selectedPrice.total.toLocaleString(undefined, {
+              maximumFractionDigits: 2
+            })
+          }}
         </div>
-      </template>
+        <button
+          class="btn btn-link"
+          data-toggle="collapse"
+          data-target="#scylla-details"
+          aria-expanded="true"
+          aria-controls="scylla-details"
+        >
+          Details
+        </button>
+        <div class="collapse" id="scylla-details">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>{{reserved ? '1 Year commitment' : 'No commitment!' }}</td>
+              </tr>
+              <tr>
+                <td>Cross AZ data transfer (replication)</td>
+                <td>
+                  <strong>
+                    ${{
+                      selectedPrice.dataTransfer.toLocaleString(undefined, {
+                        maximumFractionDigits: 2
+                      })
+                    }}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td>Cluster nodes</td>
+                <td>
+                  <strong>
+                    ${{
+                      selectedPrice.compute.toLocaleString(undefined, {
+                        maximumFractionDigits: 2
+                      })
+                    }}
+                  </strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="tech-specs">
         <h2 class="mb-3">Technical Specs</h2>
         <h3>Cluster capacity</h3>
@@ -140,7 +138,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { DefineComponent } from 'vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
 import _ from 'lodash'
 
@@ -399,9 +397,13 @@ export default {
   data() {
     return data
   },
-  props: ['workload', 'onDemand'],
+  props: ['workload', 'reserved'],
   components: {},
   computed: {
+    selectedPrice(vm: Vue.DefineComponent) {
+
+      return vm.prices.find((p: any) => p.id === (vm.reserved ? 'reserved' : 'ondemand'))
+    },
     dimensions() {
       return Object.fromEntries(Object.entries(OPTIMIZED_FOR))
     },
@@ -460,14 +462,14 @@ export default {
           compute: onDemand,
           dataTransfer,
           total: onDemand + dataTransfer
+        },
+        {
+          id: 'reserved',
+          name: 'Reserved',
+          compute: reserved,
+          dataTransfer,
+          total: reserved + dataTransfer
         }
-        // {
-        //   id: 'reserved',
-        //   name: 'Reserved',
-        //   compute: reserved,
-        //   dataTransfer,
-        //   total: reserved + dataTransfer
-        // }
       ]
       vm.$emit('update:modelValue', prices)
 

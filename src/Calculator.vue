@@ -192,6 +192,7 @@
           <component
             :is="calc1"
             :workload="workload"
+            :reserved="billAnnually"
             v-model="scyllaPrices"
           ></component>
         </div>
