@@ -1,10 +1,10 @@
 <template>
     <div class="pricing container" id="scylla-cloud">
-        <h1>Scylla cloud</h1>
-        <form>
-            <!-- <dropdown v-model="mode" :options="modes" description="Mode"></dropdown> -->
-            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>
-        </form>
+<!--        <h1>Scylla cloud</h1>-->
+<!--        <form>-->
+<!--            &lt;!&ndash; <dropdown v-model="mode" :options="modes" description="Mode"></dropdown> &ndash;&gt;-->
+<!--            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>-->
+<!--        </form>-->
         <template v-if="cluster">
         <template v-for="price in prices" :key="price.id">
         <div class="row container">
@@ -75,7 +75,6 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import Dropdown from './Dropdown.vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
 import _ from 'lodash'
 
@@ -228,7 +227,6 @@ export default {
     },
     props: ['workload'],
     components: {
-        dropdown: Dropdown
     },
     computed: {
         dimensions() {
