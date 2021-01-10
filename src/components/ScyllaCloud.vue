@@ -1,13 +1,12 @@
 <template>
   <div class="pricing" id="scylla-cloud">
-    <!--        <h1>Scylla cloud</h1>-->
     <!--        <form>-->
     <!--            &lt;!&ndash; <dropdown v-model="mode" :options="modes" description="Mode"></dropdown> &ndash;&gt;-->
     <!--            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>-->
     <!--        </form>-->
     <template v-if="cluster">
       <div>
-        <div class="price-name text-capitalize">{{ selectedPrice.name }}:</div>
+        <div class="price-name text-capitalize">{{ selectedPrice.name }}</div>
         <div class="price d-inline-block">
           <small>$</small>
           {{
@@ -24,12 +23,13 @@
           aria-controls="scylla-details"
         >
           Details
+          <i class="fa fa-chevron-down"></i>
         </button>
         <div class="collapse" id="scylla-details">
           <table class="table">
             <tbody>
               <tr>
-                <td>{{reserved ? '1 Year commitment' : 'No commitment!' }}</td>
+                <td>{{ reserved ? '1 Year commitment' : 'No commitment!' }}</td>
               </tr>
               <tr>
                 <td>Cross AZ data transfer (replication)</td>
@@ -59,7 +59,7 @@
           </table>
         </div>
       </div>
-      <div class="tech-specs">
+      <div v-if="!hideSpecs" class="tech-specs">
         <h2 class="mb-3">Technical Specs</h2>
         <h3>Cluster capacity</h3>
         <table class="table">
@@ -397,12 +397,25 @@ export default {
   data() {
     return data
   },
-  props: ['workload', 'reserved'],
+  props: {
+    workload: {
+      type: Object
+    },
+    reserved: {
+      type: Boolean,
+      default: false
+    },
+    hideSpecs: {
+      type: Boolean,
+      default: false
+    },
+  },
   components: {},
   computed: {
     selectedPrice(vm: Vue.DefineComponent) {
-
-      return vm.prices.find((p: any) => p.id === (vm.reserved ? 'reserved' : 'ondemand'))
+      return vm.prices.find(
+        (p: any) => p.id === (vm.reserved ? 'reserved' : 'ondemand')
+      )
     },
     dimensions() {
       return Object.fromEntries(Object.entries(OPTIMIZED_FOR))
@@ -483,66 +496,3 @@ export default {
 */
 </script>
 
-<style lang="scss" scoped>
-@import '../assets/style.scss';
-.price-name {
-  padding-left: 14px;
-  margin-top: 17px;
-  margin-bottom: 8px;
-  font-family: Poppins;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 24px;
-}
-.price {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 30px;
-  line-height: 24px;
-  color: $primary;
-  small {
-    font-size: 18px;
-    font-weight: 500;
-  }
-}
-#scylla-details {
-  padding-left: 14px;
-}
-.tech-specs {
-  padding-top: 18px;
-  padding-left: 14px;
-}
-.table {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 24px;
-  color: $textGrey;
-  td {
-    padding: 2px 0;
-    border: 0px;
-  }
-  strong {
-    font-weight: 500;
-    color: black;
-  }
-  b {
-    margin-left: 2px;
-    font-weight: 500;
-  }
-}
-h2 {
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  color: $primary;
-}
-h3 {
-  font-size: 14px;
-  font-weight: 600;
-}
-</style>

@@ -1,5 +1,77 @@
-$primary: #2277F1;
-$backgroundBlue: #FBFCFF;
-$borders: #C4C4C4;
-$transBlue: #E2E5EF;
-$textGrey: #5A7184;
+$primary: #2277f1;
+$backgroundBlue: #fbfcff;
+$borders: #c4c4c4;
+$transBlue: #e2e5ef;
+$textGrey: #5a7184;
+
+.fa {
+  font-size: 12px;
+  color: $primary;
+}
+.pricing {
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .price-name {
+    padding-left: 14px;
+    margin-top: 17px;
+    margin-bottom: 8px;
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+  }
+  .price {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 24px;
+    color: $primary;
+    small {
+      font-size: 18px;
+      font-weight: 500;
+    }
+  }
+  #scylla-details {
+    padding-left: 14px;
+  }
+  .tech-specs {
+    padding-top: 18px;
+    padding-left: 14px;
+  }
+  .table {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 24px;
+    color: $textGrey;
+    td {
+      padding: 2px 0;
+      border: 0px;
+    }
+    strong {
+      font-weight: 500;
+      color: black;
+    }
+    b {
+      margin-left: 2px;
+      font-weight: 500;
+    }
+  }
+  h2 {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: $primary;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+  }
+}

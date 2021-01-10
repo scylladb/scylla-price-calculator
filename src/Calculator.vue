@@ -10,7 +10,6 @@
                 <vue-slider
                   v-model="workload.reads"
                   :contained="false"
-                  :width="250"
                   :min="10"
                   :max="1000000"
                   :interval="10"
@@ -44,7 +43,6 @@
                 <vue-slider
                   v-model="workload.writes"
                   :contained="false"
-                  :width="250"
                   :min="10"
                   :max="1000000"
                   :interval="10"
@@ -80,7 +78,6 @@
                 <vue-slider
                   v-model="workload.itemSize"
                   :contained="false"
-                  :width="250"
                   :min="1"
                   :max="20"
                   dotSize="32"
@@ -115,7 +112,6 @@
                 <vue-slider
                   v-model="workload.storage"
                   :contained="false"
-                  :width="250"
                   :min="10"
                   :max="2000"
                   dotSize="32"
@@ -151,7 +147,6 @@
                   v-model="workload.replication"
                   disabled
                   :contained="false"
-                  :width="250"
                   :min="1"
                   :max="10"
                   dotSize="32"
@@ -176,7 +171,7 @@
       </div>
       <div class="col-md-7 col-sm-12 right-column d-flex flex-column">
         <div class="right-column__header d-flex">
-          <div class="billing-toggle-wrapper d-flex align-items-center">
+          <div v-if="selectedDropdownItem.name === 'details'" class="billing-toggle-wrapper d-flex align-items-center">
             <div>Bill Monthly</div>
             <Toggle
               class="mx-3"
@@ -186,35 +181,74 @@
             <div>Bill Annually</div>
             <div class="ml-2 save">Save 15%</div>
           </div>
+          <div v-else class="d-flex align-items-center">
+            Scylla Vs. {{selectedDropdownItem.name}} Comparison
+          </div>
+          <div class="dropdown">
+            <button
+              class="dropdown__btn-toggle btn btn-outline-primary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {{ selectedDropdownItem.title }}
+              <i class="fa fa-chevron-down"></i>
+            </button>
+            <div
+              class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <div
+                class="dropdown-item"
+                v-for="(item, i) in dropdownItems"
+                :key="i"
+                @click="selectedDropdownItem = item"
+              >
+                {{ item.title }}
+              </div>
+            </div>
+          </div>
         </div>
         <div class="right-column__content">
-          <div class="total">Your total payment will be</div>
-          <component
-            :is="calc1"
-            :workload="workload"
-            :reserved="billAnnually"
-            v-model="scyllaPrices"
-          ></component>
-        </div>
-
-
-        <!--initial layout leftovers start-->
-        <div class="row">
-          <div class="col-6 m-x-1">
-            <!--                        <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>-->
-
-          </div>
-          <div class="col-6 m-x-1 d-none">
-            <dropdown
-              :options="rivalCalcs"
-              v-model="calc2"
-              description="Rival offering"
-            ></dropdown>
+          <div v-if="selectedDropdownItem.name === 'details'">
+            <div class="total">Your total payment will be</div>
             <component
-              :is="calc2"
+              :is="calc1"
               :workload="workload"
-              v-model="rivalPrices"
+              :reserved="billAnnually"
+              v-model="scyllaPrices"
             ></component>
+          </div>
+          <div v-else>
+            <div class="row">
+              <div class="col-6 m-x-1">
+                <!--                        <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>-->
+                <component
+                  :is="calc1"
+                  :workload="workload"
+                  :reserved="false"
+                  hide-specs
+                  v-model="scyllaPrices"
+                ></component>
+                <component
+                  :is="calc1"
+                  :workload="workload"
+                  :reserved="true"
+                  hide-specs
+                  v-model="scyllaPrices"
+                ></component>
+              </div>
+              <div class="col-6 m-x-1">
+                <component
+                  :is="selectedDropdownItem.name"
+                  :workload="workload"
+                  hide-specs
+                  v-model="rivalPrices"
+                ></component>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -238,11 +272,6 @@ export default defineComponent({
   data() {
     return {
       scyllaCalcs: { 'Scylla cloud': 'ScyllaCloud' },
-      rivalCalcs: {
-        DynamoDB: 'DynamoDB',
-        Keyspaces: 'keyspaces',
-        Astra: 'Astra'
-      },
       workload: {
         writes: 10000,
         reads: 50000,
@@ -251,10 +280,16 @@ export default defineComponent({
         replication: 3
       },
       calc1: 'ScyllaCloud',
-      calc2: 'DynamoDB',
       scyllaPrices: [],
       rivalPrices: [],
-      billAnnually: false
+      billAnnually: false,
+      dropdownItems: [
+        { title: 'Full Details', name: 'details' },
+        { title: 'Vs. DynamoDB', name: 'DynamoDB' },
+        { title: 'Vs. Astra', name: 'Astra' },
+        { title: 'Vs. Keyspaces', name: 'Keyspaces' }
+      ],
+      selectedDropdownItem: {}
     }
   },
   components: {
@@ -282,6 +317,7 @@ export default defineComponent({
     }
   },
   mounted() {
+    this.selectedDropdownItem = this.dropdownItems[0]
     const query = new URLSearchParams(window.location.search)
     const getParam = (param: string, defaultValue: number) =>
       _.toNumber(query.get(param) ?? defaultValue)
@@ -349,6 +385,7 @@ export default defineComponent({
   }
   .slider-wrapper {
     margin-right: 32px;
+    flex-grow: 1;
     .vue-slider {
       height: 6px !important;
       .vue-slider-rail {
@@ -397,6 +434,8 @@ export default defineComponent({
   border-bottom-right-radius: 10px;
   padding: 0;
   &__header {
+    padding-right: 18px;
+    justify-content: space-between;
     padding-left: 38px;
     height: 83px;
     border-bottom: 1px solid $borders;
@@ -425,5 +464,42 @@ export default defineComponent({
 
 .pa-0 {
   padding: 0 !important;
+}
+.dropdown {
+  align-items: center;
+  display: flex;
+  &.show {
+    .fa-chevron-down {
+      transform: rotate(180deg);
+    }
+  }
+  .fa {
+    margin-left: 8px;
+  }
+  &__btn-toggle {
+    font-family: Roboto;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 11px 10px 11px 18px;
+    box-shadow: none !important;
+    background-color: white !important;
+    color: $primary !important;
+    box-shadow: none !important;
+    &:hover,
+    &:active {
+      background-color: white !important;
+      color: $primary !important;
+      box-shadow: none !important;
+    }
+    &::after {
+      display: none !important;
+    }
+    .fa-chevron-down {
+      transition: all 0.2s;
+    }
+  }
+  .dropdown-item {
+    cursor: pointer;
+  }
 }
 </style>
