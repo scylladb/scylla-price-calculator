@@ -7,32 +7,37 @@
     <template v-if="cluster">
       <div>
         <div class="price-name text-capitalize">{{ selectedPrice.name }}</div>
-        <div class="price d-inline-block">
-          <small>$</small>
-          {{
-            selectedPrice.total.toLocaleString(undefined, {
-              maximumFractionDigits: 2
-            })
-          }}
+        <div class="price__wrapper">
+          <div class="price d-flex align-items-baseline">
+            <small>$</small>
+            {{
+              selectedPrice.total.toLocaleString(undefined, {
+                maximumFractionDigits: 2
+              })
+            }}
+          </div>
+          <button
+            class="btn btn-link collapsed"
+            data-toggle="collapse"
+            :data-target="'#scylla-details' + selectedPrice.id"
+            aria-expanded="true"
+            aria-controls="scylla-details"
+          >
+            Details
+            <i class="fa fa-chevron-down"></i>
+          </button>
         </div>
-        <button
-          class="btn btn-link"
-          data-toggle="collapse"
-          data-target="#scylla-details"
-          aria-expanded="true"
-          aria-controls="scylla-details"
-        >
-          Details
-          <i class="fa fa-chevron-down"></i>
-        </button>
-        <div class="collapse" id="scylla-details">
-          <table class="table">
+        <div class="collapse" :id="'scylla-details' + selectedPrice.id">
+          <table class="table mt-2">
             <tbody>
               <tr>
                 <td>{{ reserved ? '1 Year commitment' : 'No commitment!' }}</td>
               </tr>
               <tr>
-                <td>Cross AZ data transfer (replication)</td>
+                <td class="d-flex">
+                  <div>Cross AZ data transfer (replication)</div>
+                  <div class="dashline"></div>
+                </td>
                 <td>
                   <strong>
                     ${{
@@ -44,7 +49,10 @@
                 </td>
               </tr>
               <tr>
-                <td>Cluster nodes</td>
+                <td class="d-flex">
+                  <div>Cluster nodes</div>
+                  <div class="dashline"></div>
+                </td>
                 <td>
                   <strong>
                     ${{
@@ -495,4 +503,3 @@ export default {
 4. show peak workload capability 
 */
 </script>
-

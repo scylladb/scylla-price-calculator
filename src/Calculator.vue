@@ -1,5 +1,5 @@
 <template>
-  <div class="container calculator">
+  <div class="container-fluid calculator">
     <div class="row ma-0">
       <div class="col-md-5 col-sm-12 pa-0 border-right">
         <form class="input-controls">
@@ -171,7 +171,10 @@
       </div>
       <div class="col-md-7 col-sm-12 right-column d-flex flex-column">
         <div class="right-column__header d-flex">
-          <div v-if="selectedDropdownItem.name === 'details'" class="billing-toggle-wrapper d-flex align-items-center">
+          <div
+            v-if="selectedDropdownItem.name === 'details'"
+            class="billing-toggle-wrapper d-flex align-items-center"
+          >
             <div>Bill Monthly</div>
             <Toggle
               class="mx-3"
@@ -182,7 +185,7 @@
             <div class="ml-2 save">Save 15%</div>
           </div>
           <div v-else class="d-flex align-items-center">
-            Scylla Vs. {{selectedDropdownItem.name}} Comparison
+            Scylla Vs. {{ selectedDropdownItem.name }} Comparison
           </div>
           <div class="dropdown">
             <button
@@ -223,24 +226,42 @@
           </div>
           <div v-else>
             <div class="row">
-              <div class="col-6 m-x-1">
+              <div class="col-6 px-0">
                 <!--                        <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>-->
+                <div class="calculator-header">
+                  <img src="./assets/Scylla.png" :alt="calc1" />
+                  <h3>{{ calc1 }}</h3>
+                </div>
                 <component
                   :is="calc1"
+                  v-model="scyllaPrices"
                   :workload="workload"
                   :reserved="false"
                   hide-specs
-                  v-model="scyllaPrices"
                 ></component>
                 <component
                   :is="calc1"
+                  v-model="scyllaPrices"
                   :workload="workload"
                   :reserved="true"
                   hide-specs
-                  v-model="scyllaPrices"
                 ></component>
               </div>
-              <div class="col-6 m-x-1">
+              <div class="col-6 pl-3 pr-0">
+                <div class="calculator-header">
+                  <img
+                    v-if="selectedDropdownItem.name === 'DynamoDB'"
+                    src="./assets/DynamoDB.png"
+                    :alt="selectedDropdownItem.name"
+                  />
+                  <img
+                    v-else-if="selectedDropdownItem.name === 'Astra'"
+                    src="./assets/Astra.png"
+                    :alt="selectedDropdownItem.name"
+                  />
+                  <!--                  <img v-else-if="selectedDropdownItem.name === 'Keyspaces'" src="./assets/Keyspaces.png" :alt="selectedDropdownItem.name">-->
+                  <h3>{{ selectedDropdownItem.name }}</h3>
+                </div>
                 <component
                   :is="selectedDropdownItem.name"
                   :workload="workload"
@@ -354,7 +375,7 @@ export default defineComponent({
   font-family: 'Poppins', sans-serif;
   border: 1px solid $borders;
   border-radius: 10px;
-  width: 1100px;
+  max-width: 1100px;
 }
 .col-form-label {
   margin-top: 5px;
@@ -451,7 +472,7 @@ export default defineComponent({
     }
   }
   &__content {
-    padding: 28px 42px 8px;
+    padding: 28px 42px 0;
     .total {
       font-family: Poppins;
       font-weight: normal;
@@ -494,12 +515,27 @@ export default defineComponent({
     &::after {
       display: none !important;
     }
-    .fa-chevron-down {
-      transition: all 0.2s;
-    }
   }
   .dropdown-item {
     cursor: pointer;
+  }
+}
+.calculator-header {
+  padding-left: 14px;
+  margin-bottom: 25px;
+  display: inline-flex;
+  align-items: center;
+  flex-direction: column;
+  img {
+    height: 36px;
+    margin-bottom: 9px;
+  }
+  h3 {
+    font-family: Poppins;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 22px;
+    text-align: center;
   }
 }
 </style>
