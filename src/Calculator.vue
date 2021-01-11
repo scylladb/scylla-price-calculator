@@ -3,170 +3,19 @@
     <div class="row ma-0">
       <div class="col-md-5 col-sm-12 pa-0 border-right">
         <form class="input-controls">
-          <div class="form-group">
-            <label class="col-form-label" for="reads">Read ops/sec</label>
-            <div class="d-flex">
-              <div class="slider-wrapper d-flex flex-column">
-                <vue-slider
-                  v-model="workload.reads"
-                  :contained="false"
-                  :min="10"
-                  :max="1000000"
-                  :interval="10"
-                  dotSize="32"
-                  tooltip="none"
-                >
-                  <template v-slot:dot>
-                    <div class="custom-dot"></div>
-                  </template>
-                </vue-slider>
-                <div class="d-flex justify-content-between">
-                  <div class="slider-marker">10 ops/sec</div>
-                  <div class="slider-marker">1M ops/sec</div>
-                </div>
-              </div>
-              <input
-                v-model="workload.reads"
-                min="10"
-                max="1000000"
-                class="form-control"
-                type="number"
-                name="reads"
-                id="reads"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label" for="writes">Write ops/sec</label>
-            <div class="d-flex">
-              <div class="slider-wrapper d-flex flex-column">
-                <vue-slider
-                  v-model="workload.writes"
-                  :contained="false"
-                  :min="10"
-                  :max="1000000"
-                  :interval="10"
-                  dotSize="32"
-                  tooltip="none"
-                >
-                  <template v-slot:dot>
-                    <div class="custom-dot"></div>
-                  </template>
-                </vue-slider>
-                <div class="d-flex justify-content-between">
-                  <div class="slider-marker">10 ops/sec</div>
-                  <div class="slider-marker">1M ops/sec</div>
-                </div>
-              </div>
-              <input
-                v-model="workload.writes"
-                min="10"
-                max="1000000"
-                class="form-control"
-                type="number"
-                name="writes"
-                id="writes"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label" for="item-size"
-              >Average item size (KB)</label
-            >
-            <div class="d-flex">
-              <div class="slider-wrapper d-flex flex-column">
-                <vue-slider
-                  v-model="workload.itemSize"
-                  :contained="false"
-                  :min="1"
-                  :max="20"
-                  dotSize="32"
-                  tooltip="none"
-                >
-                  <template v-slot:dot>
-                    <div class="custom-dot"></div>
-                  </template>
-                </vue-slider>
-                <div class="d-flex justify-content-between">
-                  <div class="slider-marker">1</div>
-                  <div class="slider-marker">20</div>
-                </div>
-              </div>
-              <input
-                v-model="workload.itemSize"
-                min="1"
-                max="20"
-                class="form-control"
-                type="number"
-                name="items-size"
-                id="item-size"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label" for="storage-size"
-              >Storage set size (GB)</label
-            >
-            <div class="d-flex">
-              <div class="slider-wrapper d-flex flex-column">
-                <vue-slider
-                  v-model="workload.storage"
-                  :contained="false"
-                  :min="10"
-                  :max="2000"
-                  dotSize="32"
-                  tooltip="none"
-                >
-                  <template v-slot:dot>
-                    <div class="custom-dot"></div>
-                  </template>
-                </vue-slider>
-                <div class="d-flex justify-content-between">
-                  <div class="slider-marker">10</div>
-                  <div class="slider-marker">2000</div>
-                </div>
-              </div>
-              <input
-                v-model="workload.storage"
-                min="10"
-                max="2000"
-                class="form-control"
-                type="number"
-                name="storage-size"
-                id="storage-size"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-form-label" for="writes"
-              >Replication factor</label
-            >
-            <div class="d-flex">
-              <div class="slider-wrapper d-flex flex-column">
-                <vue-slider
-                  v-model="workload.replication"
-                  disabled
-                  :contained="false"
-                  :min="1"
-                  :max="10"
-                  dotSize="32"
-                  tooltip="none"
-                >
-                  <template v-slot:dot>
-                    <div class="custom-dot"></div>
-                  </template>
-                </vue-slider>
-              </div>
-              <input
-                disabled
-                v-model="workload.replication"
-                class="form-control"
-                type="number"
-                name="writes"
-                id="writes"
-              />
-            </div>
-          </div>
+          <SliderInput
+            v-for="(slider, i) in sliders"
+            :key="i"
+            :value="workload[slider.title]"
+            :title="slider.title"
+            :label="slider.label"
+            :min="slider.min"
+            :max="slider.max"
+            :min-marker="slider.minMarker"
+            :max-marker="slider.maxMarker"
+            :disabled="slider.disabled"
+            @update="$data.workload[slider.title] = $event"
+          ></SliderInput>
         </form>
       </div>
       <div class="col-md-7 col-sm-12 right-column d-flex flex-column">
@@ -284,10 +133,9 @@ import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
 import Astra from './components/Astra.vue'
 import Toggle from './components/Toggle.vue'
+import SliderInput from './components/SliderInput.vue'
 import _ from 'lodash'
 import { ComponentPublicInstance, DefineComponent, defineComponent } from 'vue'
-import VueSlider from 'vue-slider-component'
-import 'vue-slider-component/theme/default.css'
 
 export default defineComponent({
   data() {
@@ -304,6 +152,48 @@ export default defineComponent({
       scyllaPrices: [],
       rivalPrices: [],
       billAnnually: false,
+      sliders: [
+        {
+          title: 'reads',
+          min: 10,
+          max: 1000000,
+          minMarker: '10 ops/sec',
+          maxMarker: '1M ops/sec',
+          label: 'Read ops/sec'
+        },
+        {
+          title: 'writes',
+          min: 10,
+          max: 1000000,
+          minMarker: '10 ops/sec',
+          maxMarker: '1M ops/sec',
+          label: 'Write ops/sec'
+        },
+
+        {
+          title: 'itemSize',
+          min: 1,
+          max: 20,
+          minMarker: '1',
+          maxMarker: '20',
+          label: 'Average item size (KB)'
+        },
+        {
+          title: 'storage',
+          min: 10,
+          max: 2000,
+          minMarker: '10',
+          maxMarker: '2000',
+          label: 'Storage set size (GB)'
+        },
+        {
+          title: 'replication',
+          disabled: true,
+          min: 1,
+          max: 10,
+          label: 'Replication Factor'
+        }
+      ],
       dropdownItems: [
         { title: 'Full Details', name: 'details' },
         { title: 'Vs. DynamoDB', name: 'DynamoDB' },
@@ -314,12 +204,12 @@ export default defineComponent({
     }
   },
   components: {
+    SliderInput,
     ScyllaCloud,
     DynamoDB,
     Keyspaces,
     Astra,
     Dropdown,
-    VueSlider,
     Toggle
   },
   methods: {
@@ -335,6 +225,9 @@ export default defineComponent({
           document.querySelector('#copy-indicator')?.classList.remove('show')
         }, 1000)
       })
+    },
+    onUpdate(model: any, v: any) {
+      this.workload.reads = Number(v)
     }
   },
   mounted() {
