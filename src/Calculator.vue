@@ -21,8 +21,8 @@
       <div class="col-md-7 col-sm-12 right-column d-flex flex-column">
         <div class="right-column__header d-flex">
           <div
-            v-if="selectedDropdownItem.name === 'details'"
-            class="billing-toggle-wrapper d-flex align-items-center"
+            v-show="selectedDropdownItem.name === 'details'"
+            class="billing-toggle-wrapper align-items-center"
           >
             <div>Bill Monthly</div>
             <Toggle
@@ -33,7 +33,7 @@
             <div>Bill Annually</div>
             <div class="ml-2 save">Save 15%</div>
           </div>
-          <div v-else class="d-flex align-items-center">
+          <div v-show="selectedDropdownItem.name !== 'details'" class="scylla-comparison align-items-center">
             Scylla Vs. {{ selectedDropdownItem.name }} Comparison
           </div>
           <div class="dropdown">
@@ -351,7 +351,11 @@ export default defineComponent({
     padding-left: 38px;
     height: 83px;
     border-bottom: 1px solid $borders;
+    .scylla-comparison {
+      display: flex;
+    }
     .billing-toggle-wrapper {
+      display: flex;
       font-family: Roboto;
       font-style: normal;
       font-weight: normal;
