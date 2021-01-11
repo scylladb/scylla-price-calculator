@@ -76,7 +76,6 @@
           <div v-else>
             <div class="row">
               <div class="col-6 px-0">
-                <!--                        <dropdown :options="scyllaCalcs" v-model="calc1" description="Scylla offering"></dropdown>-->
                 <div class="calculator-header">
                   <img src="./assets/Scylla.png" :alt="calc1" />
                   <h3>{{ calc1 }}</h3>
@@ -99,16 +98,10 @@
               <div class="col-6 pl-3 pr-0">
                 <div class="calculator-header">
                   <img
-                    v-if="selectedDropdownItem.name === 'DynamoDB'"
-                    src="./assets/DynamoDB.png"
+                    v-if="getIconPath(selectedDropdownItem.icon)"
+                    :src="getIconPath(selectedDropdownItem.icon)"
                     :alt="selectedDropdownItem.name"
                   />
-                  <img
-                    v-else-if="selectedDropdownItem.name === 'Astra'"
-                    src="./assets/Astra.png"
-                    :alt="selectedDropdownItem.name"
-                  />
-                  <!--                  <img v-else-if="selectedDropdownItem.name === 'Keyspaces'" src="./assets/Keyspaces.png" :alt="selectedDropdownItem.name">-->
                   <h3>{{ selectedDropdownItem.name }}</h3>
                 </div>
                 <component
@@ -195,9 +188,9 @@ export default defineComponent({
         }
       ],
       dropdownItems: [
-        { title: 'Full Details', name: 'details' },
-        { title: 'Vs. DynamoDB', name: 'DynamoDB' },
-        { title: 'Vs. Astra', name: 'Astra' },
+        { title: 'Full Details', name: 'details'  },
+        { title: 'Vs. DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
+        { title: 'Vs. Astra', name: 'Astra', icon: 'Astra' },
         { title: 'Vs. Keyspaces', name: 'Keyspaces' }
       ],
       selectedDropdownItem: {}
@@ -225,6 +218,11 @@ export default defineComponent({
           document.querySelector('#copy-indicator')?.classList.remove('show')
         }, 1000)
       })
+    },
+    getIconPath(name: string) {
+        if (!name) return ''
+        const images = require.context('./assets/', false, /\.png$/)
+        return images(`./${name}.png`)
     },
     onUpdate(model: any, v: any) {
       this.workload.reads = Number(v)
