@@ -24,14 +24,13 @@
         </div>
       </div>
       <input
-        v-model="getSetValue"
-        :min="min"
-        :max="max"
+        v-model="getSetFormattedValue"
         class="form-control"
-        type="number"
+        type="text"
         :name="title"
         :id="title"
         :disabled="disabled"
+        @blur="onBlur"
       />
     </div>
   </div>
@@ -84,10 +83,23 @@ export default defineComponent({
   components: { VueSlider },
   data() {
     return {
-      vl: 100000
+      focused: false,
+      temp: null
     }
   },
   computed: {
+    getSetFormattedValue: {
+      get(vm: Vue.DefineComponent): any {
+        const amount = vm.value
+        return vm.thousandSeprator(amount)
+      },
+      set(value: any) {
+        const textAmount = value.toString() || ''
+        const noCommasAmount = textAmount.replace(/,/g, '')
+        const numberAmount = Number(noCommasAmount)
+        this.$emit('update', Math.min(this.max, numberAmount))
+      }
+    },
     getSetValue: {
       get(vm: Vue.DefineComponent) {
         return vm.value
@@ -97,7 +109,28 @@ export default defineComponent({
       }
     }
   },
-  methods: {}
+  methods: {
+    onFocus() {
+      this.focused = true
+    },
+    onBlur() {
+      this.focused = false
+      this.$emit('update', Math.max(this.min, this.getSetValue))
+    },
+    thousandSeprator(amount: any) {
+      if (
+        amount !== '' ||
+        amount !== undefined ||
+        amount !== 0 ||
+        amount !== '0' ||
+        amount !== null
+      ) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      } else {
+        return amount
+      }
+    }
+  }
 })
 </script>
 
