@@ -27,7 +27,7 @@
             <i class="fa fa-chevron-down"></i>
           </button>
         </div>
-        <div class="collapse" :id="'scylla-details' + selectedPrice.id">
+        <div class="collapse details__wrapper" :id="'scylla-details' + selectedPrice.id">
           <table class="table mt-2">
             <tbody>
               <tr>
