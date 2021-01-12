@@ -69,7 +69,7 @@
             <component
               :is="calc1"
               :workload="workload"
-              :reserved="billAnnually"
+              :pricing="billAnnually ? 'reserved' : 'ondemand'"
               v-model="scyllaPrices"
             ></component>
           </div>
@@ -84,14 +84,6 @@
                   :is="calc1"
                   v-model="scyllaPrices"
                   :workload="workload"
-                  :reserved="false"
-                  hide-specs
-                ></component>
-                <component
-                  :is="calc1"
-                  v-model="scyllaPrices"
-                  :workload="workload"
-                  :reserved="true"
                   hide-specs
                 ></component>
               </div>

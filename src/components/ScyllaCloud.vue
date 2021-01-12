@@ -5,138 +5,151 @@
     <!--            <dropdown v-model="replicationFactor" readonly :options="[3, 4, 5]" description="Replication factor"></dropdown>-->
     <!--        </form>-->
     <template v-if="cluster">
-      <div>
-        <div class="price-name text-capitalize">{{ selectedPrice.name }}</div>
-        <div class="price__wrapper">
-          <div class="price d-flex align-items-baseline">
-            <small>$</small>
-            {{
-              selectedPrice.total.toLocaleString(undefined, {
-                maximumFractionDigits: 2
-              })
-            }}
+      <div v-for="(price, i) in filteredPrices" :key="i">
+        <div>
+          <div class="price-name text-capitalize">{{ price.name }}</div>
+          <div class="price__wrapper">
+            <div class="price d-flex align-items-baseline">
+              <small>$</small>
+              {{
+                price.total.toLocaleString(undefined, {
+                  maximumFractionDigits: 2
+                })
+              }}
+            </div>
+            <button
+              class="btn btn-link collapsed"
+              data-toggle="collapse"
+              :data-target="'#scylla-details' + price.id"
+              aria-expanded="true"
+              aria-controls="scylla-details"
+            >
+              Details
+              <i class="fa fa-chevron-down"></i>
+            </button>
           </div>
-          <button
-            class="btn btn-link collapsed"
-            data-toggle="collapse"
-            :data-target="'#scylla-details' + selectedPrice.id"
-            aria-expanded="true"
-            aria-controls="scylla-details"
+          <div
+            class="collapse details__wrapper"
+            :id="'scylla-details' + price.id"
           >
-            Details
-            <i class="fa fa-chevron-down"></i>
-          </button>
+            <table class="table mt-2">
+              <tbody>
+                <tr>
+                  <td>
+                    {{ reserved ? '1 Year commitment' : 'No commitment!' }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="d-flex">
+                    <div>Cross AZ data transfer (replication)</div>
+                    <div class="dashline"></div>
+                  </td>
+                  <td>
+                    <strong>
+                      ${{
+                        price.dataTransfer.toLocaleString(undefined, {
+                          maximumFractionDigits: 2
+                        })
+                      }}
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="d-flex">
+                    <div>Cluster nodes</div>
+                    <div class="dashline"></div>
+                  </td>
+                  <td>
+                    <strong>
+                      ${{
+                        price.compute.toLocaleString(undefined, {
+                          maximumFractionDigits: 2
+                        })
+                      }}
+                    </strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="collapse details__wrapper" :id="'scylla-details' + selectedPrice.id">
-          <table class="table mt-2">
+        <div v-if="!hideSpecs" class="tech-specs">
+          <h2 class="mb-3">Technical Specs</h2>
+          <h3>Cluster capacity</h3>
+          <table class="table">
+            <colgroup>
+              <col span="1" style="width: 30%;" />
+              <col span="1" style="width: 70%;" />
+            </colgroup>
             <tbody>
               <tr>
-                <td>{{ reserved ? '1 Year commitment' : 'No commitment!' }}</td>
-              </tr>
-              <tr>
-                <td class="d-flex">
-                  <div>Cross AZ data transfer (replication)</div>
-                  <div class="dashline"></div>
-                </td>
+                <td>Storage (post replication)</td>
                 <td>
-                  <strong>
-                    ${{
-                      selectedPrice.dataTransfer.toLocaleString(undefined, {
-                        maximumFractionDigits: 2
-                      })
-                    }}
-                  </strong>
+                  <strong>{{
+                    clusterCapacity.dataset.toLocaleString()
+                  }}</strong>
+                  <b>GB</b>
                 </td>
               </tr>
               <tr>
-                <td class="d-flex">
-                  <div>Cluster nodes</div>
-                  <div class="dashline"></div>
+                <td>Sustained throughput</td>
+                <td>
+                  <strong>{{
+                    clusterCapacity.sustainedLoad.toLocaleString()
+                  }}</strong>
+                  <b>ops/sec</b>
                 </td>
+              </tr>
+              <tr>
+                <td>Peak throughput</td>
+                <td>
+                  <strong>{{
+                    clusterCapacity.peakLoad.toLocaleString()
+                  }}</strong>
+                  <b>ops/sec</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Cluster specs</h3>
+          <table class="table">
+            <colgroup>
+              <col span="1" style="width: 30%;" />
+              <col span="1" style="width: 70%;" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td>Nodes</td>
                 <td>
                   <strong>
-                    ${{
-                      selectedPrice.compute.toLocaleString(undefined, {
-                        maximumFractionDigits: 2
-                      })
-                    }}
+                    {{ cluster.nodes }} x {{ cluster.instanceType.name }}
                   </strong>
+                  <b
+                    >({{ cluster.instanceType.vcpu.toLocaleString() }} vCPUs,
+                    {{ cluster.instanceType.memory.toLocaleString() }}GB RAM,
+                    {{ cluster.instanceType.storage.toLocaleString() }}GB
+                    storage)</b
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>Total raw storage</td>
+                <td>
+                  <strong>{{
+                    clusterCapacity.storage.toLocaleString()
+                  }}</strong>
+                  <b>GB</b>
+                </td>
+              </tr>
+              <tr>
+                <td>Total vCPU</td>
+                <td>
+                  <strong>{{ clusterCapacity.vcpu.toLocaleString() }}</strong>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
-      <div v-if="!hideSpecs" class="tech-specs">
-        <h2 class="mb-3">Technical Specs</h2>
-        <h3>Cluster capacity</h3>
-        <table class="table">
-          <colgroup>
-            <col span="1" style="width: 30%;" />
-            <col span="1" style="width: 70%;" />
-          </colgroup>
-          <tbody>
-            <tr>
-              <td>Storage (post replication)</td>
-              <td>
-                <strong>{{ clusterCapacity.dataset.toLocaleString() }}</strong>
-                <b>GB</b>
-              </td>
-            </tr>
-            <tr>
-              <td>Sustained throughput</td>
-              <td>
-                <strong>{{
-                  clusterCapacity.sustainedLoad.toLocaleString()
-                }}</strong>
-                <b>ops/sec</b>
-              </td>
-            </tr>
-            <tr>
-              <td>Peak throughput</td>
-              <td>
-                <strong>{{ clusterCapacity.peakLoad.toLocaleString() }}</strong>
-                <b>ops/sec</b>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <h3>Cluster specs</h3>
-        <table class="table">
-          <colgroup>
-            <col span="1" style="width: 30%;" />
-            <col span="1" style="width: 70%;" />
-          </colgroup>
-          <tbody>
-            <tr>
-              <td>Nodes</td>
-              <td>
-                <strong>
-                  {{ cluster.nodes }} x {{ cluster.instanceType.name }}
-                </strong>
-                <b
-                  >({{ cluster.instanceType.vcpu.toLocaleString() }} vCPUs,
-                  {{ cluster.instanceType.memory.toLocaleString() }}GB RAM,
-                  {{ cluster.instanceType.storage.toLocaleString() }}GB
-                  storage)</b
-                >
-              </td>
-            </tr>
-            <tr>
-              <td>Total raw storage</td>
-              <td>
-                <strong>{{ clusterCapacity.storage.toLocaleString() }}</strong>
-                <b>GB</b>
-              </td>
-            </tr>
-            <tr>
-              <td>Total vCPU</td>
-              <td>
-                <strong>{{ clusterCapacity.vcpu.toLocaleString() }}</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </template>
     <div v-else class="alert alert-warning">
@@ -409,21 +422,20 @@ export default {
     workload: {
       type: Object
     },
-    reserved: {
-      type: Boolean,
-      default: false
+    pricing: {
+      type: String,
+      enum: ['reserved', 'ondemand']
     },
     hideSpecs: {
       type: Boolean,
       default: false
-    },
+    }
   },
   components: {},
   computed: {
-    selectedPrice(vm: Vue.DefineComponent) {
-      return vm.prices.find(
-        (p: any) => p.id === (vm.reserved ? 'reserved' : 'ondemand')
-      )
+    filteredPrices(vm: Vue.DefineComponent) {
+      if (!vm.pricing) return vm.prices
+      return vm.prices.filter((p: any) => p.id === vm.pricing)
     },
     dimensions() {
       return Object.fromEntries(Object.entries(OPTIMIZED_FOR))
