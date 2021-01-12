@@ -1,5 +1,116 @@
-$primary: #2277F1;
-$backgroundBlue: #FBFCFF;
-$borders: #C4C4C4;
-$transBlue: #E2E5EF;
-$textGrey: #5A7184;
+$primary: #2277f1;
+$backgroundBlue: #fbfcff;
+$borders: #c4c4c4;
+$transBlue: #e2e5ef;
+$textGrey: #5a7184;
+
+.calculator {
+  .fa {
+    font-size: 12px;
+    color: $primary;
+  }
+  .pricing {
+    &__header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .price__wrapper {
+      display: flex;
+      align-items: center;
+    }
+    .price-name {
+      padding-left: 14px;
+      padding-top: 17px;
+      margin-bottom: 8px;
+      font-family: Poppins;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 24px;
+    }
+    .price {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 30px;
+      line-height: 24px;
+      color: $primary;
+      margin-right: 8px;
+      small {
+        font-size: 18px;
+        font-weight: 500;
+        margin-right: 2px;
+      }
+    }
+    .details__wrapper {
+      padding-left: 14px;
+    }
+    .tech-specs {
+      padding-top: 18px;
+      padding-left: 14px;
+    }
+    .table {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 24px;
+      color: $textGrey;
+      td {
+        align-items: center;
+        padding: 2px 0;
+        border: 0px;
+      }
+      strong {
+        font-weight: 500;
+        color: black;
+      }
+      b {
+        margin-left: 2px;
+        font-weight: 500;
+      }
+    }
+    h2 {
+      font-family: Poppins;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 24px;
+      color: $primary;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  .btn-link {
+    display: flex;
+    align-items: baseline;
+    padding: 0 !important;
+    font-size: 12px !important;
+    &:hover, &:active, &:focus {
+      color: $primary !important;
+      text-decoration-line: none !important;
+      box-shadow: none !important;
+    }
+    i {
+      margin-top: -1px;
+      margin-left: 5px;
+    }
+    &:not(.collapsed) {
+      .fa-chevron-down {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .dashline {
+    margin: 0 8px;
+    border-bottom: 1px dashed $borders;
+    flex: 1 1 auto;
+    height: 0;
+  }
+  i {
+    transition: all 0.2s;
+  }
+}
