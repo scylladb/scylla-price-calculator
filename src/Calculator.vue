@@ -183,7 +183,7 @@ export default defineComponent({
         { title: 'Full Details', name: 'details'  },
         { title: 'Vs. DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
         { title: 'Vs. Astra', name: 'Astra', icon: 'Astra' },
-        { title: 'Vs. Keyspaces', name: 'Keyspaces' }
+        { title: 'Vs. Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
       ],
       selectedDropdownItem: {}
     }
