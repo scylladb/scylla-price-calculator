@@ -29,7 +29,17 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
+        if: github.repository_owner == 'nukemberg'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           cname: scyllacalc.nukemberg.com
+
+      # Runs a set of commands using the runners shell
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.repository_owner == 'scylladb'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: ${{ github.repository }}.gh.${{ github.repository_owner }}.com
