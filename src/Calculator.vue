@@ -58,14 +58,13 @@
               <span v-show="selectedDropdownItem.name !== 'details'">
                 Vs.
               </span>
-              <div
-                class="d-inline-block"
+              <span
                 :class="{
                   trademarked: selectedDropdownItem.name !== 'details'
                 }"
               >
                 {{ selectedDropdownItem.title }}
-              </div>
+              </span>
               <i class="fa fa-chevron-down"></i>
             </button>
             <div
@@ -81,12 +80,9 @@
                 <span v-show="item.name !== 'details'">
                   Vs.
                 </span>
-                <div
-                  class="d-inline-block"
-                  :class="{ trademarked: item.name !== 'details' }"
-                >
+                <span :class="{ trademarked: item.name !== 'details' }">
                   {{ item.title }}
-                </div>
+                </span>
               </div>
             </div>
           </div>
