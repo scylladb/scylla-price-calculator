@@ -33,8 +33,18 @@
             <div>Bill Annually</div>
             <div class="ml-2 save">Save 15%</div>
           </div>
-          <div v-show="selectedDropdownItem.name !== 'details'" class="scylla-comparison align-items-center">
-            Scylla Vs. {{ selectedDropdownItem.name }} Comparison
+          <div
+            v-show="selectedDropdownItem.name !== 'details'"
+            class="scylla-comparison align-items-center"
+          >
+            Scylla Vs.<span
+              class="mx-1"
+              :class="{
+                trademarked: selectedDropdownItem.name !== 'details'
+              }"
+              >{{ selectedDropdownItem.title }}</span
+            >
+            Comparison
           </div>
           <div class="dropdown">
             <button
@@ -45,7 +55,17 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              {{ selectedDropdownItem.title }}
+              <span v-show="selectedDropdownItem.name !== 'details'">
+                Vs.
+              </span>
+              <div
+                class="d-inline-block"
+                :class="{
+                  trademarked: selectedDropdownItem.name !== 'details'
+                }"
+              >
+                {{ selectedDropdownItem.title }}
+              </div>
               <i class="fa fa-chevron-down"></i>
             </button>
             <div
@@ -58,7 +78,15 @@
                 :key="i"
                 @click="selectedDropdownItem = item"
               >
-                {{ item.title }}
+                <span v-show="item.name !== 'details'">
+                  Vs.
+                </span>
+                <div
+                  class="d-inline-block"
+                  :class="{ trademarked: item.name !== 'details' }"
+                >
+                  {{ item.title }}
+                </div>
               </div>
             </div>
           </div>
@@ -94,7 +122,7 @@
                     :src="getIconPath(selectedDropdownItem.icon)"
                     :alt="selectedDropdownItem.name"
                   />
-                  <h3>{{ selectedDropdownItem.name }}</h3>
+                  <h3 class="trademarked">{{ selectedDropdownItem.name }}</h3>
                 </div>
                 <component
                   :is="selectedDropdownItem.name"
@@ -180,10 +208,10 @@ export default defineComponent({
         }
       ],
       dropdownItems: [
-        { title: 'Full Details', name: 'details'  },
-        { title: 'Vs. DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
-        { title: 'Vs. Astra', name: 'Astra', icon: 'Astra' },
-        { title: 'Vs. Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
+        { title: 'Full Details', name: 'details' },
+        { title: 'DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
+        { title: 'Astra', name: 'Astra', icon: 'Astra' },
+        { title: 'Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
       ],
       selectedDropdownItem: {}
     }
@@ -212,9 +240,9 @@ export default defineComponent({
       })
     },
     getIconPath(name: string) {
-        if (!name) return ''
-        const images = require.context('./assets/', false, /\.png$/)
-        return images(`./${name}.png`)
+      if (!name) return ''
+      const images = require.context('./assets/', false, /\.png$/)
+      return images(`./${name}.png`)
     },
     onUpdate(model: any, v: any) {
       this.workload.reads = Number(v)
