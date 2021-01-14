@@ -359,7 +359,10 @@ export default defineComponent({
     }
   }
   &__content {
-    padding: 28px 42px 0;
+    padding: 28px 16px 0 36px;
+    @media (min-width: 911px) {
+      padding: 28px 28px 0 13%;
+    }
     .total {
       font-family: Poppins;
       font-weight: normal;
@@ -372,6 +375,9 @@ export default defineComponent({
 
 .pa-0 {
   padding: 0 !important;
+}
+.dropdown-menu {
+  font-family: Roboto;
 }
 .dropdown {
   align-items: center;
