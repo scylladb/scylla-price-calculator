@@ -89,7 +89,9 @@ $textGrey: #5a7184;
     align-items: baseline;
     padding: 0 !important;
     font-size: 12px !important;
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
       color: $primary !important;
       text-decoration-line: none !important;
       box-shadow: none !important;
@@ -112,5 +114,9 @@ $textGrey: #5a7184;
   }
   i {
     transition: all 0.2s;
+  }
+  .trademarked::after {
+    content: "\2122";
+    font-weight: normal;
   }
 }
