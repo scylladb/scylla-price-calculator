@@ -151,9 +151,9 @@ export default defineComponent({
     return {
       scyllaCalcs: { 'Scylla cloud': 'ScyllaCloud' },
       workload: {
-        writes: 10000,
-        reads: 50000,
-        storage: 200,
+        writes: 100000,
+        reads: 500000,
+        storage: 2000,
         itemSize: 1,
         replication: 3
       },
@@ -164,18 +164,18 @@ export default defineComponent({
       sliders: [
         {
           title: 'reads',
-          min: 10,
-          max: 1000000,
-          minMarker: '10 ops/sec',
-          maxMarker: '1M ops/sec',
+          min: 10000,
+          max: 10000000,
+          minMarker: '10K ops/sec',
+          maxMarker: '10M ops/sec',
           label: 'Read ops/sec'
         },
         {
           title: 'writes',
-          min: 10,
-          max: 1000000,
-          minMarker: '10 ops/sec',
-          maxMarker: '1M ops/sec',
+          min: 10000,
+          max: 10000000,
+          minMarker: '10K ops/sec',
+          maxMarker: '10M ops/sec',
           label: 'Write ops/sec'
         },
 
@@ -190,9 +190,9 @@ export default defineComponent({
         {
           title: 'storage',
           min: 10,
-          max: 2000,
+          max: 200000,
           minMarker: '10',
-          maxMarker: '2000',
+          maxMarker: '200000',
           label: 'Storage set size (GB)'
         },
         {
