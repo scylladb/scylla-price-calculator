@@ -11,7 +11,7 @@
           <div class="price__wrapper">
             <div class="price d-flex align-items-baseline">
               <small>$</small>
-              {{
+              {{price.total > 1000 ? price.total.toLocaleString(undefined, {maximumFractionDigits: 0}) :
                 price.total.toLocaleString(undefined, {
                   maximumFractionDigits: 2
                 })
@@ -36,7 +36,7 @@
               <tbody>
                 <tr>
                   <td>
-                    {{ reserved ? '1 Year commitment' : 'No commitment!' }}
+                    {{ pricing == 'reserved' ? '1 Year commitment' : 'No commitment!' }}
                   </td>
                 </tr>
                 <tr>
@@ -46,7 +46,7 @@
                   </td>
                   <td>
                     <strong>
-                      ${{
+                      ${{price > 10 ? price.dataTransfer.toLocaleString(undefined, {maximumFractionDigits: 0}) :
                         price.dataTransfer.toLocaleString(undefined, {
                           maximumFractionDigits: 2
                         })
@@ -63,7 +63,7 @@
                     <strong>
                       ${{
                         price.compute.toLocaleString(undefined, {
-                          maximumFractionDigits: 2
+                          maximumFractionDigits: 0
                         })
                       }}
                     </strong>

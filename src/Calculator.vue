@@ -52,7 +52,7 @@
               class="dropdown__btn-toggle btn btn-outline-primary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
             >
