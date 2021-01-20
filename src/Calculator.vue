@@ -25,13 +25,13 @@
             v-show="selectedDropdownItem.name === 'details'"
             class="billing-toggle-wrapper align-items-center"
           >
-            <div>Bill Monthly</div>
+            <div>On demand</div>
             <Toggle
               class="mx-3"
               :toggled-right="billAnnually"
               @click="billAnnually = !billAnnually"
             ></Toggle>
-            <div>Bill Annually</div>
+            <div>Reserved (1 year)</div>
             <div class="ml-2 save">Save 15%</div>
           </div>
           <div
