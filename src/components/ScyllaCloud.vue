@@ -19,8 +19,8 @@
             </div>
             <button
               class="btn btn-link collapsed"
-              data-toggle="collapse"
-              :data-target="'#scylla-details' + price.id"
+              data-bs-toggle="collapse"
+              :data-bs-target="'#scylla-details-' + price.id"
               aria-expanded="true"
               aria-controls="scylla-details"
             >
@@ -30,7 +30,7 @@
           </div>
           <div
             class="collapse details__wrapper"
-            :id="'scylla-details' + price.id"
+            :id="'scylla-details-' + price.id"
           >
             <table class="table mt-2">
               <tbody>
