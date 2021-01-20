@@ -479,7 +479,7 @@ export default {
       const replicationFactor = vm.replicationFactor
       // currently, Scylla requires each replica to be in a different AZ
       const replicationTraffic =
-        ((workload.reads + workload.writes) *
+        hoursPerMonth * 3600 * ((workload.reads + workload.writes) *
           workload.itemSize *
           (replicationFactor - 1)) /
         1e6
