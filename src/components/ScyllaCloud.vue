@@ -124,8 +124,7 @@
                   <strong>
                     {{ cluster.nodes }} x {{ cluster.instanceType.name }}
                   </strong>
-                  <b
-                    >({{ cluster.instanceType.vcpu.toLocaleString() }} vCPUs,
+                  <b>({{ cluster.instanceType.vcpu.toLocaleString() }} vCPUs,
                     {{ cluster.instanceType.memory.toLocaleString() }}GB RAM,
                     {{ cluster.instanceType.storage.toLocaleString() }}GB
                     storage)</b
