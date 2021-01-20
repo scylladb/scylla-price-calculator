@@ -165,19 +165,19 @@ export default defineComponent({
       sliders: [
         {
           title: 'reads',
-          min: 10000,
+          min: 100000,
           max: 10000000,
           interval: 1000,
-          minMarker: '10K ops/sec',
+          minMarker: '100K ops/sec',
           maxMarker: '10M ops/sec',
           label: 'Read ops/sec'
         },
         {
           title: 'writes',
-          min: 10000,
+          min: 100000,
           max: 10000000,
           interval: 1000,
-          minMarker: '10K ops/sec',
+          minMarker: '100K ops/sec',
           maxMarker: '10M ops/sec',
           label: 'Write ops/sec'
         },
