@@ -194,7 +194,7 @@ const vcpuPerf: Record<MODE, PerfModeData> = {
 }
 
 const AWSDataTransferPrice = 0.01 // GB/month
-const CompactionOverhead = 2
+const CompactionOverhead = 1.4 // ICS
 const RAMtoDiskRatio = 30
 
 const modes: Record<string, MODE> = {
