@@ -13,6 +13,7 @@
             :max="slider.max"
             :min-marker="slider.minMarker"
             :max-marker="slider.maxMarker"
+            :interval="slider.interval"
             :disabled="slider.disabled"
             @update="$data.workload[slider.title] = $event"
           ></SliderInput>
@@ -166,6 +167,7 @@ export default defineComponent({
           title: 'reads',
           min: 10000,
           max: 10000000,
+          interval: 1000,
           minMarker: '10K ops/sec',
           maxMarker: '10M ops/sec',
           label: 'Read ops/sec'
@@ -174,11 +176,11 @@ export default defineComponent({
           title: 'writes',
           min: 10000,
           max: 10000000,
+          interval: 1000,
           minMarker: '10K ops/sec',
           maxMarker: '10M ops/sec',
           label: 'Write ops/sec'
         },
-
         {
           title: 'itemSize',
           min: 1,
@@ -189,11 +191,12 @@ export default defineComponent({
         },
         {
           title: 'storage',
-          min: 10,
+          min: 100,
           max: 200000,
-          minMarker: '10',
-          maxMarker: '200000',
-          label: 'Storage set size (GB)'
+          interval: 100,
+          minMarker: '100',
+          maxMarker: '200,000',
+          label: 'Data set size (GB)'
         },
         {
           title: 'replication',

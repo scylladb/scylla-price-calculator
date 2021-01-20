@@ -11,7 +11,7 @@
           :max="max"
           dotSize="32"
           tooltip="none"
-          :interval="1"
+          :interval=interval
           :disabled="disabled"
         >
           <template v-slot:dot>
@@ -62,6 +62,10 @@ export default defineComponent({
     max: {
       type: Number,
       default: Math.max()
+    },
+    interval: {
+      type: Number,
+      default: 1
     },
     minMarker: {
       type: String,
