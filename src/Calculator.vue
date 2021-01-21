@@ -243,9 +243,6 @@ export default defineComponent({
       if (!name) return ''
       const images = require.context('./assets/', false, /\.png$/)
       return images(`./${name}.png`)
-    },
-    onUpdate(model: any, v: any) {
-      this.workload.reads = Number(v)
     }
   },
   mounted() {
@@ -253,7 +250,7 @@ export default defineComponent({
     const query = new URLSearchParams(window.location.search)
     const getParam = (param: string, defaultValue: number) =>
       _.toNumber(query.get(param) ?? defaultValue)
-    this.workload = _.mapValues(this.workload, (v, k) => getParam(k, v))
+    this.inputWorkload = _.mapValues(this.inputWorkload, (v, k) => getParam(k, v))
   },
   errorCaptured(
     err: unknown,
