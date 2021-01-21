@@ -132,7 +132,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Total raw storage</td>
+                <td>Disk storage</td>
                 <td>
                   <strong>{{
                     (clusterCapacity.storage / 2**10).toLocaleString()
