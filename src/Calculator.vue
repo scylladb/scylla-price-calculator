@@ -257,7 +257,7 @@ export default defineComponent({
     instance: ComponentPublicInstance | null,
     info: string
   ): boolean {
-    console.error('Error occurred in Astra component ' + err)
+    console.error('Error occurred in component ' + err)
     return false
   },
   computed: {
