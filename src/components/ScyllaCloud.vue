@@ -83,7 +83,7 @@
             </colgroup>
             <tbody>
               <tr>
-                <td>Storage (post replication)</td>
+                <td>Max dataset size</td>
                 <td>
                   <strong>{{
                     (clusterCapacity.dataset / 2**10).toLocaleString()
