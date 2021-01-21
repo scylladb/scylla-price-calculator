@@ -5,7 +5,6 @@
       <div class="slider-wrapper d-flex flex-column">
         <vue-slider
           v-model="getSetValue"
-          @input="$emit('update', $event.target.value)"
           :contained="false"
           :min="min"
           :max="max"
@@ -51,7 +50,7 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    value: {
+    modelValue: {
       type: Number,
       required: true
     },
@@ -94,22 +93,22 @@ export default defineComponent({
   computed: {
     getSetFormattedValue: {
       get(vm: Vue.DefineComponent): any {
-        const amount = vm.value
+        const amount = vm.modelValue
         return vm.thousandSeprator(amount)
       },
       set(value: any) {
         const textAmount = value.toString() || ''
         const noCommasAmount = textAmount.replace(/,/g, '')
         const numberAmount = Number(noCommasAmount)
-        this.$emit('update', Math.min(this.max, numberAmount))
+        this.$emit('update:modelValue', Math.min(this.max, numberAmount))
       }
     },
     getSetValue: {
       get(vm: Vue.DefineComponent) {
-        return vm.value
+        return vm.modelValue
       },
-      set(value: any) {
-        this.$emit('update', value)
+      set(value: number) {
+        this.$emit('update:modelValue', value)
       }
     }
   },
@@ -119,7 +118,7 @@ export default defineComponent({
     },
     onBlur() {
       this.focused = false
-      this.$emit('update', Math.max(this.min, this.getSetValue))
+      this.$emit('update:modelValue', Math.max(this.min, this.modelValue))
     },
     thousandSeprator(amount: any) {
       if (

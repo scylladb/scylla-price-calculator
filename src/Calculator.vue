@@ -6,7 +6,7 @@
           <SliderInput
             v-for="(slider, i) in sliders"
             :key="i"
-            :value="workload[slider.title]"
+            v-model="workload[slider.title]"
             :title="slider.title"
             :label="slider.label"
             :min="slider.min"
