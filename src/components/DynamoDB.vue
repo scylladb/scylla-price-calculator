@@ -44,6 +44,7 @@ const onDemandPricing = {
   rcu: 0.25
 }
 
+const ThroughputAvgFactor = 0.33
 const storagePricing = 0.25 // GB/month
 
 export default {
@@ -61,7 +62,7 @@ export default {
         ((rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) *
           3600 *
           hoursPerMonth) /
-        1e6
+        1e6 * ThroughputAvgFactor
       const provisioned =
         (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) *
         hoursPerMonth

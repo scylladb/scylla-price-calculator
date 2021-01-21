@@ -1,11 +1,15 @@
 # Scylla price calculator
 
 ## Scylla workload estimation and cluster selection
+### Workload assumptions
+- Throughput given is peak throughput. For data transfer billing and databases which bill on commulative query count (DynamoDB on-demand) we assume average of 1/3 of the peak.
+- Item size is the object size used in a query. The terminology for "object" differs between databases, e.g. document, row, item, etc.
+
 ### Model assumptions
 - In CQL mode, each vCPU gives ~ 6250 reads, 8000 writes sustained; post compactions, repairs etc
 - Each operation will use _replication factor_ vCPUs (assumes consistency level ALL for reads)
 - Performance degradation due to large item size: > 10kb perf *= 0.75, > 100kb 0.5, > 1MB 0.25
-- Compaction overhead ~ 2x
+- Compaction overhead ~ 1.4x ([ICS](https://docs.scylladb.com/architecture/compaction/compaction-strategies/#incremental-compaction-strategy-ics))
 - RAM to disk ratio 1:30
 - Replicas are on different AZs and all writes eventually propagate to all replicas
 
