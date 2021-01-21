@@ -1,6 +1,6 @@
 <template>
   <div class="form-group">
-    <label class="col-form-label" :for="title">{{ label }}</label>
+    <label class="col-form-label" v-tooltip="tooltip" :for="title">{{ label }}</label>
     <div class="d-flex">
       <div class="slider-wrapper d-flex flex-column">
         <vue-slider
@@ -47,6 +47,10 @@ export default defineComponent({
   name: 'SliderInput',
   props: {
     title: {
+      type: String,
+      default: ''
+    },
+    tooltip: {
       type: String,
       default: ''
     },

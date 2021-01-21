@@ -9,6 +9,7 @@
             v-model="inputWorkload[slider.title]"
             :title="slider.title"
             :label="slider.label"
+            :tooltip="slider.tooltip"
             :min="slider.min"
             :max="slider.max"
             :min-marker="slider.minMarker"
@@ -188,7 +189,7 @@ export default defineComponent({
           max: 20,
           minMarker: '1',
           maxMarker: '20',
-          label: 'Average item size (KB)'
+          label: 'Average item size (KB)',
         },
         {
           title: 'storage',

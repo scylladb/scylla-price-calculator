@@ -91,16 +91,7 @@
                   <b>TB</b>
                 </td>
               </tr>
-              <tr>
-                <td>Sustained throughput</td>
-                <td>
-                  <strong>{{
-                    clusterCapacity.sustainedLoad.toLocaleString()
-                  }}</strong>
-                  <b>ops/sec</b>
-                </td>
-              </tr>
-              <tr>
+              <tr v-tooltip="'Total read and write combined throughput'">
                 <td>Peak throughput</td>
                 <td>
                   <strong>{{
