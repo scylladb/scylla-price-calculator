@@ -194,6 +194,7 @@ const vcpuPerf: Record<MODE, PerfModeData> = {
 }
 
 const AWSDataTransferPrice = 0.01 // GB/month
+const DataThroughputAvgFactor = 0.33
 const CompactionOverhead = 1.4 // ICS
 const RAMtoDiskRatio = 30
 
@@ -482,7 +483,7 @@ export default {
         hoursPerMonth * 3600 * ((workload.reads + workload.writes) *
           workload.itemSize *
           (replicationFactor - 1)) /
-        1e6
+        1e6 * DataThroughputAvgFactor
       const dataTransfer = replicationTraffic * AWSDataTransferPrice
       const cluster: ClusterSpec = vm.cluster!
       const onDemand = toMonthlyPrice(ondemandPrice(cluster))
