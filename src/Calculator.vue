@@ -6,7 +6,7 @@
           <SliderInput
             v-for="(slider, i) in sliders"
             :key="i"
-            v-model="workload[slider.title]"
+            v-model="inputWorkload[slider.title]"
             :title="slider.title"
             :label="slider.label"
             :min="slider.min"
@@ -15,7 +15,6 @@
             :max-marker="slider.maxMarker"
             :interval="slider.interval"
             :disabled="slider.disabled"
-            @update="$data.workload[slider.title] = $event"
           ></SliderInput>
         </form>
       </div>
@@ -151,10 +150,12 @@ export default defineComponent({
   data() {
     return {
       scyllaCalcs: { 'Scylla cloud': 'ScyllaCloud' },
-      workload: {
+      // note that inputWorkload has different units than workload
+      // The calculator uses GB for RAM and storage calculations, but input and displayed output might have different unit because reasons
+      inputWorkload: {
         writes: 100000,
         reads: 500000,
-        storage: 2000,
+        storage: 1, // TB
         itemSize: 1,
         replication: 3
       },
@@ -191,12 +192,12 @@ export default defineComponent({
         },
         {
           title: 'storage',
-          min: 100,
-          max: 200000,
-          interval: 100,
-          minMarker: '100',
-          maxMarker: '200,000',
-          label: 'Data set size (GB)'
+          min: 1,
+          max: 2000,
+          interval: 1,
+          minMarker: '1',
+          maxMarker: '2000',
+          label: 'Data set size (TB)'
         },
         {
           title: 'replication',
@@ -263,6 +264,14 @@ export default defineComponent({
     return false
   },
   computed: {
+    // canonical workload in GB units for storage and RAM. Item size is in KB
+    // perhaps it would have been better to create some DataUnit class which handles unit conversion but I life is too short to deal with this shit
+    workload(vm: DefineComponent) {
+      return {
+        ...vm.inputWorkload,
+        storage: vm.inputWorkload.storage * 2**10 // TB to GB
+      }
+    },
     prices(vm: DefineComponent) {
       const _prices: [string, number][] = []
       for (const price of vm.scyllaPrices) {

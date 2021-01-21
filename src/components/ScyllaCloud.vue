@@ -86,9 +86,9 @@
                 <td>Storage (post replication)</td>
                 <td>
                   <strong>{{
-                    clusterCapacity.dataset.toLocaleString()
+                    (clusterCapacity.dataset / 2**10).toLocaleString()
                   }}</strong>
-                  <b>GB</b>
+                  <b>TB</b>
                 </td>
               </tr>
               <tr>
@@ -135,9 +135,9 @@
                 <td>Total raw storage</td>
                 <td>
                   <strong>{{
-                    clusterCapacity.storage.toLocaleString()
+                    (clusterCapacity.storage / 2**10).toLocaleString()
                   }}</strong>
-                  <b>GB</b>
+                  <b>TB</b>
                 </td>
               </tr>
               <tr>
