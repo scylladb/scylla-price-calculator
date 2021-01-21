@@ -389,6 +389,7 @@ export default defineComponent({
       .save {
         font-size: 14px;
         color: #36b37e;
+        padding: 5px;
       }
     }
   }
