@@ -17,7 +17,31 @@
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+    <nav class="navbar navbar-light shadow">
+      <div class="container-fluid">
+        <a href="https://www.scylladb.com/" class="navbar-brand">
+        <img src="https://www.scylladb.com/wp-content/uploads/scylladb-logo-1.png" alt=""></a>
+      </div>
+    </nav>
     <div id="app">
     </div>
+    <footer class="bg-light text-center text-lg-start">
+      <div class="container p-4">
+        <div class="row">
+          <div class="col-lg-10">
+            <p><a href="https://github.com/scylladb/scylla-price-calculator/">
+              <img src="GitHub-Mark-32px.png" alt=""> source code</a>
+            </p>
+            <p>
+            Calculator model and assumptions are documented in the <a href="https://github.com/scylladb/scylla-price-calculator/blob/master/README.md">README</a>.
+            </p>
+            <p>
+Apache® and Apache Cassandra® are either registered trademarks or trademarks of the Apache Software Foundation in the United States and/or other countries. Amazon DynamoDB® and Keyspaces® are trademarks of Amazon.com, Inc. No endorsements by The Apache Software Foundation or Amazon.com, Inc. are implied by the use of these marks.
+              </p>
+          </div>
+        </div>
+        <!-- <div class="row"><small><%= VUE_APP_VERSION %></small></div> -->
+      </div>
+    </footer>
   </body>
 </html>
