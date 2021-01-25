@@ -396,8 +396,7 @@ function selectClusterInstances<K extends keyof Instance>(
     .map(ondemandPrice)
     .min()
     .value()
-  const x = _.chain(validSpecs).filter()
-
+  
   return _.chain(validSpecs)
     .filter(spec => ondemandPrice(spec) < lowestPrice * 1.2)
     .sortBy('nodes')
