@@ -82,7 +82,7 @@
               <col span="1" style="width: 70%;" />
             </colgroup>
             <tbody>
-              <tr>
+              <tr v-tooltip="'Total usable (net) online storage, after accounting for compaction and replication overhead.'">
                 <td>Max dataset size</td>
                 <td>
                   <strong>{{

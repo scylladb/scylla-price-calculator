@@ -209,7 +209,8 @@ export default defineComponent({
           disabled: true,
           min: 1,
           max: 10,
-          label: 'Replication Factor'
+          label: 'Replication Factor',
+          tooltip: 'Number of replicas, currently only 3 is supported'
         }
       ],
       dropdownItems: [
