@@ -2,6 +2,9 @@
   <div class="container-fluid calculator">
     <div class="row ma-0">
       <div class="col-md-5 col-sm-12 pa-0 border-right">
+        <div class="container">
+                  <button class="btn btn-outline-primary" v-on:click="copyLink" v-tooltip="'Click to copy permalink to clipboard'">Permalink <i class="bi bi-link-45deg"></i></button>
+          </div>
         <form class="input-controls">
           <SliderInput
             v-for="(slider, i) in sliders"
