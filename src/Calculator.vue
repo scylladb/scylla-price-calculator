@@ -2,9 +2,6 @@
   <div class="container-fluid calculator">
     <div class="row ma-0">
       <div class="col-md-5 col-sm-12 pa-0 border-right">
-        <div class="container">
-                  <button class="btn btn-outline-primary" v-on:click="copyLink" v-tooltip="'Click to copy permalink to clipboard'">Permalink <i class="bi bi-link-45deg"></i></button>
-          </div>
         <form class="input-controls">
           <SliderInput
             v-for="(slider, i) in sliders"
@@ -137,6 +134,10 @@
       </div>
     </div>
   </div>
+  <teleport to="#share">
+    <button class="btn btn-sm btn-outline-primary" v-on:click="copyLink" v-tooltip="'Click to copy permalink to clipboard'">Permalink <i class="bi bi-link-45deg"></i></button>
+    <div class="alert alert-success invisible shadow rounded rounded-4 mt-2" id="copy-indicator">Copied!</div>
+  </teleport>
 </template>
 
 <script lang="ts">
@@ -237,9 +238,9 @@ export default defineComponent({
       })
 
       navigator.clipboard.writeText(url.toString()).then(() => {
-        document.querySelector('#copy-indicator')?.classList.add('show')
+        document.querySelector('#copy-indicator')?.classList.remove('invisible')
         setTimeout(() => {
-          document.querySelector('#copy-indicator')?.classList.remove('show')
+          document.querySelector('#copy-indicator')?.classList.add('invisible')
         }, 1000)
       })
     },

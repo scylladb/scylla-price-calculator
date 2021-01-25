@@ -25,7 +25,7 @@
               aria-controls="scylla-details"
             >
               Details
-              <i class="fa fa-chevron-down"></i>
+              <i class="bi bi-chevron-bar-down"></i>
             </button>
           </div>
           <div
