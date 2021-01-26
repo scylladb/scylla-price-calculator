@@ -35,6 +35,7 @@ const onDemandPricing = {
 }
 
 const storagePricing = 0.3 // GB/month
+const ThroughputAvgFactor = 0.33
 
 export default {
   props: ['workload'],
@@ -47,7 +48,7 @@ export default {
         ((rcu * onDemandPricing.rcu + wcu * onDemandPricing.wcu) *
           3600 *
           hoursPerMonth) /
-        1e6
+        1e6 * ThroughputAvgFactor
       const provisioned =
         (wcu * provisionedPricing.wcu + rcu * provisionedPricing.rcu) *
         hoursPerMonth
