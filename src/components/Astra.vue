@@ -33,8 +33,8 @@
         <div class="card-header">
           <button
             class="btn btn-link"
-            data-toggle="collapse"
-            data-target="#astra-details"
+            data-bs-toggle="collapse"
+            data-bs-target="#astra-details"
             aria-expanded="true"
             aria-controls="astra-details"
           >
@@ -103,11 +103,9 @@ export interface PerfModeData {
 }
 
 const vcpuPerf: PerfModeData = {
-  reads: 1500,
-  writes: 1700
+  reads: 400,
+  writes: 400
 }
-
-const RAMtoDiskRatio = 30
 
 interface ResourceSpec {
   readonly vcpu: number
@@ -132,9 +130,9 @@ const instanceTypes = [
   { name: 'C10', vcpu: 12, memory: 48, storage: 500, hourlyPrice: 2.25 },
   { name: 'C20', vcpu: 24, memory: 96, storage: 500, hourlyPrice: 3.1 },
   { name: 'C40', vcpu: 48, memory: 192, storage: 500, hourlyPrice: 4.9 },
-  { name: 'D10', vcpu: 12, memory: 48, storage: 1536, hourlyPrice: 5.42 },
-  { name: 'D20', vcpu: 24, memory: 96, storage: 1536, hourlyPrice: 6.69 },
-  { name: 'D40', vcpu: 48, memory: 192, storage: 1536, hourlyPrice: 9.86 }
+  // { name: 'D10', vcpu: 12, memory: 48, storage: 1536, hourlyPrice: 5.42 },
+  // { name: 'D20', vcpu: 24, memory: 96, storage: 1536, hourlyPrice: 6.69 },
+  // { name: 'D40', vcpu: 48, memory: 192, storage: 1536, hourlyPrice: 9.86 }
 ]
 
 function toMonthlyPrice(price: HourlyPrice): MonthlyPrice {
@@ -180,17 +178,16 @@ function selectClusterInstances(
   tier: string
 ): ClusterSpec | undefined {
   const validSpecs: ClusterSpec[] = []
-
+  
   for (const n of _.range(1, 500)) {
     for (const instanceType of instanceTypes) {
       if (
         (tier == 'AUTOSELECT' &&
-          instanceType.vcpu * n > specs.vcpu &&
-          instanceType.memory * n > specs.memory &&
-          instanceType.storage * n > specs.storage) ||
+          instanceType.vcpu * n >= specs.vcpu &&
+          instanceType.storage * n >= specs.storage) ||
         (instanceType.name == tier &&
-          instanceType.vcpu * n > specs.vcpu &&
-          instanceType.storage * n > specs.storage)
+          instanceType.vcpu * n >= specs.vcpu &&
+          instanceType.storage * n >= specs.storage)
       ) {
         validSpecs.push({ instanceType, capacityUnits: n })
       }
@@ -201,10 +198,8 @@ function selectClusterInstances(
     .map(clusterPrice)
     .min()
     .value()
-  const x = _.chain(validSpecs).filter()
-
   return _.chain(validSpecs)
-    .filter(spec => clusterPrice(spec) < lowestPrice * 1.2)
+    .filter(spec => clusterPrice(spec) < lowestPrice * 1.1)
     .sortBy('capacityUnits')
     .head()
     .value()
@@ -237,13 +232,10 @@ export default defineComponent({
       const workload: WorkloadSpec = vm.workload
       const replicationFactor = vm.replicationFactor
       const vcpus = Math.ceil(
-        ((workload.reads / vcpuPerf.reads + workload.writes / vcpuPerf.writes) *
-          replicationFactor) /
+        (workload.reads / vcpuPerf.reads + workload.writes / vcpuPerf.writes) /
           itemSizePerfFactor(workload.itemSize)
       )
-      const memory =
-        Math.ceil(workload.storage / RAMtoDiskRatio) * replicationFactor
-      return { vcpu: vcpus, storage: workload.storage, memory }
+      return { vcpu: vcpus, storage: workload.storage }
     },
     cluster: (vm: DefineComponent): ClusterSpec | undefined => {
       return selectClusterInstances(
@@ -258,15 +250,13 @@ export default defineComponent({
       const dataset = totalResources.storage
       const peakLoad =
         (totalResources.vcpu * (vcpuPerf.writes + vcpuPerf.reads)) /
-        2 /
-        vm.replicationFactor
+        2
       const sustainedLoad = peakLoad * 0.66
 
       return { sustainedLoad, peakLoad, dataset, ...totalResources }
     },
     prices: (vm: DefineComponent) => {
       const workload: WorkloadSpec = vm.workload
-      const replicationFactor = vm.replicationFactor
       const cluster: ClusterSpec = vm.cluster!
       const price = clusterPrice(cluster)
 

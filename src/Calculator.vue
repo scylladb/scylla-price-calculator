@@ -272,7 +272,7 @@ export default defineComponent({
     workload(vm: DefineComponent) {
       return {
         ...vm.inputWorkload,
-        storage: vm.inputWorkload.storage * 2**10 // TB to GB
+        storage: vm.inputWorkload.storage * 1000 // TB to GB
       }
     },
     prices(vm: DefineComponent) {
