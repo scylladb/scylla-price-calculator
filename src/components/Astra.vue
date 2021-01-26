@@ -46,18 +46,12 @@
           <table class="table">
             <tbody>
               <tr>
-                <td>Storage (post replication)</td>
-                <td>{{ clusterCapacity.dataset.toLocaleString() }} GB</td>
+                <td>Data set size</td>
+                <td>{{ clusterCapacity.storage.toLocaleString() }} GB</td>
               </tr>
               <tr>
-                <td>Sustained throughput</td>
-                <td>
-                  {{ clusterCapacity.sustainedLoad.toLocaleString() }} ops/sec
-                </td>
-              </tr>
-              <tr>
-                <td>Peak throughput</td>
-                <td>{{ clusterCapacity.peakLoad.toLocaleString() }} ops/sec</td>
+                <td>Throughput</td>
+                <td>{{ clusterCapacity.throughput.toLocaleString() }} ops/sec</td>
               </tr>
             </tbody>
           </table>
@@ -75,10 +69,6 @@
                     storage)</small
                   >
                 </td>
-              </tr>
-              <tr>
-                <td>Total vCPU</td>
-                <td>{{ clusterCapacity.vcpu.toLocaleString() }}</td>
               </tr>
             </tbody>
           </table>
@@ -102,15 +92,11 @@ export interface PerfModeData {
   writes: number
 }
 
-const vcpuPerf: PerfModeData = {
-  reads: 400,
-  writes: 400
-}
-
 interface ResourceSpec {
   readonly vcpu: number
   readonly memory: number
-  readonly storage: number
+  readonly storage: number,
+  readonly throughput: number
 }
 
 interface Instance extends ResourceSpec {
@@ -127,9 +113,9 @@ type HourlyPrice = number
 type MonthlyPrice = number
 
 const instanceTypes = [
-  { name: 'C10', vcpu: 12, memory: 48, storage: 500, hourlyPrice: 2.25 },
-  { name: 'C20', vcpu: 24, memory: 96, storage: 500, hourlyPrice: 3.1 },
-  { name: 'C40', vcpu: 48, memory: 192, storage: 500, hourlyPrice: 4.9 },
+  { name: 'C10', vcpu: 12, memory: 48, storage: 500, hourlyPrice: 2.25, throughput: 5000 },
+  { name: 'C20', vcpu: 24, memory: 96, storage: 500, hourlyPrice: 3.1, throughput: 7500 },
+  { name: 'C40', vcpu: 48, memory: 192, storage: 500, hourlyPrice: 4.9, throughput: 15000 },
   // { name: 'D10', vcpu: 12, memory: 48, storage: 1536, hourlyPrice: 5.42 },
   // { name: 'D20', vcpu: 24, memory: 96, storage: 1536, hourlyPrice: 6.69 },
   // { name: 'D40', vcpu: 48, memory: 192, storage: 1536, hourlyPrice: 9.86 }
@@ -150,7 +136,8 @@ function clusterResources(cluster: ClusterSpec): ResourceSpec {
   return {
     storage: cluster.instanceType.storage * cluster.capacityUnits,
     vcpu: cluster.instanceType.vcpu * cluster.capacityUnits,
-    memory: cluster.instanceType.memory * cluster.capacityUnits
+    memory: cluster.instanceType.memory * cluster.capacityUnits,
+    throughput: cluster.instanceType.throughput * cluster.capacityUnits
   }
 }
 
@@ -173,21 +160,21 @@ function itemSizePerfFactor(itemSize: number): number {
 */
 
 function selectClusterInstances(
-  specs: ResourceSpec,
-  replicationFactor: number,
+  workload: WorkloadSpec,
   tier: string
 ): ClusterSpec | undefined {
   const validSpecs: ClusterSpec[] = []
-  
+  const workloadThroughput = workload.writes + workload.reads
+
   for (const n of _.range(1, 500)) {
     for (const instanceType of instanceTypes) {
       if (
         (tier == 'AUTOSELECT' &&
-          instanceType.vcpu * n >= specs.vcpu &&
-          instanceType.storage * n >= specs.storage) ||
+          instanceType.throughput * n >= workloadThroughput &&
+          instanceType.storage * n >= workload.storage) ||
         (instanceType.name == tier &&
-          instanceType.vcpu * n >= specs.vcpu &&
-          instanceType.storage * n >= specs.storage)
+          instanceType.throughput * n >= workloadThroughput &&
+          instanceType.storage * n >= workload.storage)
       ) {
         validSpecs.push({ instanceType, capacityUnits: n })
       }
@@ -228,32 +215,15 @@ export default defineComponent({
     dropdown: Dropdown
   },
   computed: {
-    estimatedResources: (vm: DefineComponent) => {
-      const workload: WorkloadSpec = vm.workload
-      const replicationFactor = vm.replicationFactor
-      const vcpus = Math.ceil(
-        (workload.reads / vcpuPerf.reads + workload.writes / vcpuPerf.writes) /
-          itemSizePerfFactor(workload.itemSize)
-      )
-      return { vcpu: vcpus, storage: workload.storage }
-    },
     cluster: (vm: DefineComponent): ClusterSpec | undefined => {
       return selectClusterInstances(
-        vm.estimatedResources,
-        vm.replicationFactor,
+        vm.workload,
         vm.tier
       )
     },
     clusterCapacity: (vm: DefineComponent) => {
       const cluster: ClusterSpec = vm.cluster
-      const totalResources = clusterResources(cluster)
-      const dataset = totalResources.storage
-      const peakLoad =
-        (totalResources.vcpu * (vcpuPerf.writes + vcpuPerf.reads)) /
-        2
-      const sustainedLoad = peakLoad * 0.66
-
-      return { sustainedLoad, peakLoad, dataset, ...totalResources }
+      return clusterResources(cluster)
     },
     prices: (vm: DefineComponent) => {
       const workload: WorkloadSpec = vm.workload
