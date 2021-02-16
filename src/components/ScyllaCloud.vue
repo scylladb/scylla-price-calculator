@@ -149,9 +149,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { DefineComponent } from 'vue'
+import Vue, { isVNode } from 'vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
-import _, { min } from 'lodash'
+import _ from 'lodash'
 
 enum MODE {
   CQL = 'CQL',
@@ -386,15 +386,16 @@ function selectClusterInstances<K extends keyof Instance>(
   replicationFactor: number,
   optimizedFor: K
 ): ClusterSpec | undefined {
+  const diskSpace = workload.storage * CompactionOverhead
   const recommendedResources: ResourceSpec = {
-    vcpu: (workload.reads / perf.reads + workload.writes / perf.writes),
-    storage: workload.storage * CompactionOverhead,
+    vcpu: (workload.reads / perf.reads + workload.writes / perf.writes) / itemSizePerfFactor(workload.itemSize),
+    storage: diskSpace,
     memory: Math.ceil(workload.storage / RAMtoDataRatio)
   }
 
   const minimalResources: ResourceSpec = {
     ...recommendedResources,
-    memory: Math.ceil(workload.storage / RAMtoDiskRatio)
+    memory: Math.ceil(diskSpace / RAMtoDiskRatio)
   }
 
   const recommendedConfigs = selectClusterConfigs(recommendedResources)
