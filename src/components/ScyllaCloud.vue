@@ -151,7 +151,7 @@
 <script lang="ts">
 import Vue, { DefineComponent } from 'vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
-import _ from 'lodash'
+import _, { min } from 'lodash'
 
 enum MODE {
   CQL = 'CQL',
@@ -188,7 +188,7 @@ const AWSDataTransferPrice = 0.01 // GB/month
 const DataThroughputAvgFactor = 0.33
 const CompactionOverhead = 1.4 // ICS
 const RAMtoDiskRatio = 100
-const RAMtoDataRatio = 40
+const RAMtoDataRatio = 75 // ICS
 
 const modes: Record<string, MODE> = {
   CQL: MODE.CQL,
@@ -368,19 +368,13 @@ function itemSizePerfFactor(itemSize: number): number {
 - storage - select nodes with enough cpu and max storage
 - cost - select nodes with just enough cpu and storage, even if smaller nodes
 */
-
-function selectClusterInstances<K extends keyof Instance>(
-  specs: ResourceSpec,
-  replicationFactor: number,
-  optimizedFor: K
-): ClusterSpec | undefined {
+function selectClusterConfigs(specs: ResourceSpec): ClusterSpec[] {
   const instances = instanceTypes.aws
   const validSpecs = []
-
+  
   for (const n of _.range(
-    replicationFactor,
-    100 * replicationFactor,
-    replicationFactor
+    1,
+    100
   )) {
     for (const instanceType of instances) {
       if (
@@ -393,16 +387,49 @@ function selectClusterInstances<K extends keyof Instance>(
     }
   }
 
-  const lowestPrice = _.chain(validSpecs)
+  return validSpecs
+}
+
+
+function selectClusterInstances<K extends keyof Instance>(
+  perf: PerfModeData,
+  workload: WorkloadSpec,
+  replicationFactor: number,
+  optimizedFor: K
+): ClusterSpec | undefined {
+
+
+  const recommendedResources: ResourceSpec = {
+    vcpu: (workload.reads / perf.reads + workload.writes / perf.writes),
+    storage: workload.storage * CompactionOverhead,
+    memory: Math.ceil(workload.storage / RAMtoDataRatio)
+  }
+
+  const minimalResources: ResourceSpec = {
+    ...recommendedResources,
+    memory: Math.ceil(workload.storage / RAMtoDiskRatio)
+  }
+
+  const recommendedConfigs = selectClusterConfigs(recommendedResources)
+  const minimalConfigs = selectClusterConfigs(minimalResources)
+
+  const lowestPrice = _.chain(minimalConfigs)
     .map(ondemandPrice)
     .min()
     .value()
   
-  return _.chain(validSpecs)
+  const bestConfig = (configs: ClusterSpec[]) => _.chain(configs)
     .filter(spec => ondemandPrice(spec) < lowestPrice * 1.2)
     .sortBy('nodes')
     .head()
     .value()
+
+  const selectedConfig = bestConfig(recommendedConfigs) || bestConfig(minimalConfigs)
+
+  return {
+    ...selectedConfig,
+    nodes: selectedConfig.nodes*replicationFactor
+  }
 }
 
 export default {
@@ -431,26 +458,10 @@ export default {
     dimensions() {
       return Object.fromEntries(Object.entries(OPTIMIZED_FOR))
     },
-    estimatedResources: (vm: Vue.DefineComponent) => {
-      const workload: WorkloadSpec = vm.workload
-      const replicationFactor = vm.replicationFactor
-      const perf = vcpuPerf[vm.mode as MODE]
-      const vcpus = Math.ceil(
-        ((workload.reads / perf.reads + workload.writes / perf.writes) *
-          replicationFactor) /
-          itemSizePerfFactor(workload.itemSize)
-      )
-
-      const unreplicatedStorage = workload.storage * CompactionOverhead
-      const storage = unreplicatedStorage * replicationFactor
-      const memory =
-        Math.ceil(unreplicatedStorage / RAMtoDiskRatio) * replicationFactor
-
-      return { vcpu: vcpus, storage, memory }
-    },
     cluster: (vm: Vue.DefineComponent): ClusterSpec | undefined => {
       return selectClusterInstances(
-        vm.estimatedResources,
+        vcpuPerf[vm.mode as MODE],
+        vm.workload,
         vm.replicationFactor,
         vm.optimizeFor
       )
