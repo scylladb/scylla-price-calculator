@@ -369,25 +369,14 @@ function itemSizePerfFactor(itemSize: number): number {
 - cost - select nodes with just enough cpu and storage, even if smaller nodes
 */
 function selectClusterConfigs(specs: ResourceSpec): ClusterSpec[] {
-  const instances = instanceTypes.aws
-  const validSpecs = []
-  
-  for (const n of _.range(
-    1,
-    100
-  )) {
-    for (const instanceType of instances) {
-      if (
+  return instanceTypes.aws.map(instanceType => {
+    const nodes = _.find(_.range(1, 100), n => (
         instanceType.vcpu * n >= specs.vcpu &&
         instanceType.memory * n >= specs.memory &&
         instanceType.storage * n >= specs.storage
-      ) {
-        validSpecs.push({ instanceType, nodes: n })
-      }
-    }
-  }
-
-  return validSpecs
+      )) || 0
+    return {instanceType, nodes}
+  }).filter(({nodes}) => nodes > 0)
 }
 
 
@@ -397,8 +386,6 @@ function selectClusterInstances<K extends keyof Instance>(
   replicationFactor: number,
   optimizedFor: K
 ): ClusterSpec | undefined {
-
-
   const recommendedResources: ResourceSpec = {
     vcpu: (workload.reads / perf.reads + workload.writes / perf.writes),
     storage: workload.storage * CompactionOverhead,
