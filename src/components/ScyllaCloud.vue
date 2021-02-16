@@ -187,7 +187,8 @@ const vcpuPerf: Record<MODE, PerfModeData> = {
 const AWSDataTransferPrice = 0.01 // GB/month
 const DataThroughputAvgFactor = 0.33
 const CompactionOverhead = 1.4 // ICS
-const RAMtoDiskRatio = 30
+const RAMtoDiskRatio = 100
+const RAMtoDataRatio = 40
 
 const modes: Record<string, MODE> = {
   CQL: MODE.CQL,
@@ -439,9 +440,12 @@ export default {
           replicationFactor) /
           itemSizePerfFactor(workload.itemSize)
       )
+
+      const unreplicatedStorage = workload.storage * CompactionOverhead
+      const storage = unreplicatedStorage * replicationFactor
       const memory =
-        Math.ceil(workload.storage / RAMtoDiskRatio) * replicationFactor
-      const storage = workload.storage * replicationFactor * CompactionOverhead
+        Math.ceil(unreplicatedStorage / RAMtoDiskRatio) * replicationFactor
+
       return { vcpu: vcpus, storage, memory }
     },
     cluster: (vm: Vue.DefineComponent): ClusterSpec | undefined => {
