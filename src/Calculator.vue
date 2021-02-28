@@ -57,7 +57,7 @@
               aria-expanded="false"
             >
               <span v-show="selectedDropdownItem.name !== 'details'">
-                Vs.
+                vs.
               </span>
               <span
                 :class="{
@@ -92,7 +92,7 @@
           <div v-if="selectedDropdownItem.name === 'details'">
             <div class="total">Your total payment will be</div>
             <component
-              :is="calc1"
+              :is="calc1.name"
               :workload="workload"
               :pricing="billAnnually ? 'reserved' : 'ondemand'"
               v-model="scyllaPrices"
@@ -102,11 +102,11 @@
             <div class="row">
               <div class="col-6 px-0">
                 <div class="calculator-header">
-                  <img src="./assets/Scylla.png" :alt="calc1" />
-                  <h3>{{ calc1 }}</h3>
+                  <img :src="getIconPath(calc1.icon)" :alt="calc1.name" />
+                  <h3>{{ calc1.title }}</h3>
                 </div>
                 <component
-                  :is="calc1"
+                  :is="calc1.name"
                   v-model="scyllaPrices"
                   :workload="workload"
                   hide-specs
@@ -119,7 +119,7 @@
                     :src="getIconPath(selectedDropdownItem.icon)"
                     :alt="selectedDropdownItem.name"
                   />
-                  <h3 class="trademarked">{{ selectedDropdownItem.name }}</h3>
+                  <h3 class="trademarked">{{ selectedDropdownItem.title }}</h3>
                 </div>
                 <component
                   :is="selectedDropdownItem.name"
@@ -150,11 +150,11 @@ import Toggle from './components/Toggle.vue'
 import SliderInput from './components/SliderInput.vue'
 import _ from 'lodash'
 import { ComponentPublicInstance, DefineComponent, defineComponent } from 'vue'
+const scyllaCalcs = [{title: 'Scylla Cloud', name: 'ScyllaCloud', icon: 'ScyllaCloud' }]
 
 export default defineComponent({
   data() {
     return {
-      scyllaCalcs: { 'Scylla cloud': 'ScyllaCloud' },
       // note that inputWorkload has different units than workload
       // The calculator uses GB for RAM and storage calculations, but input and displayed output might have different unit because reasons
       inputWorkload: {
@@ -164,7 +164,7 @@ export default defineComponent({
         itemSize: 1,
         replication: 3
       },
-      calc1: 'ScyllaCloud',
+      calc1: scyllaCalcs[0],
       scyllaPrices: [],
       rivalPrices: [],
       billAnnually: false,
@@ -214,10 +214,10 @@ export default defineComponent({
         }
       ],
       dropdownItems: [
-        { title: 'Full Details', name: 'details' },
+        { title: 'Compare', name: 'details' },
         { title: 'DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
-        { title: 'Astra', name: 'Astra', icon: 'Astra' },
-        { title: 'Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
+        { title: 'DataStax Astra', name: 'Astra', icon: 'Astra' },
+        { title: 'Amazon Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
       ],
       selectedDropdownItem: {}
     }
