@@ -38,7 +38,7 @@
             v-show="selectedDropdownItem.name !== 'details'"
             class="scylla-comparison align-items-center"
           >
-            Scylla Vs.<span
+            Scylla vs.<span
               class="mx-1"
               :class="{
                 trademarked: selectedDropdownItem.name !== 'details'
@@ -79,7 +79,7 @@
                 @click="selectedDropdownItem = item"
               >
                 <span v-show="item.name !== 'details'">
-                  Vs.
+                  vs.
                 </span>
                 <span :class="{ trademarked: item.name !== 'details' }">
                   {{ item.title }}
