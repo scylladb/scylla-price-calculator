@@ -42,6 +42,11 @@ $textGrey: #5a7184;
         margin-right: 2px;
       }
     }
+    div.price::after {
+      content: "/month";
+      font-size: 18px;
+      font-weight: 500;
+    }
     .details__wrapper {
       padding-left: 14px;
     }
