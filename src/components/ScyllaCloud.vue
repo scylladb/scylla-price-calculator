@@ -11,8 +11,8 @@
           <div class="price__wrapper">
             <div class="price d-flex align-items-baseline">
               <small>$</small>
-              {{price.total > 1000 ? price.total.toLocaleString(undefined, {maximumFractionDigits: 0}) :
-                price.total.toLocaleString(undefined, {
+              {{price.compute > 1000 ? price.compute.toLocaleString(undefined, {maximumFractionDigits: 0}) :
+                price.compute.toLocaleString(undefined, {
                   maximumFractionDigits: 2
                 })
               }}
@@ -63,6 +63,21 @@
                     <strong>
                       ${{
                         price.compute.toLocaleString(undefined, {
+                          maximumFractionDigits: 0
+                        })
+                      }}
+                    </strong>
+                  </td>
+                </tr>
+                                <tr>
+                  <td class="d-flex">
+                    <div>Total</div>
+                    <div class="dashline"></div>
+                  </td>
+                  <td>
+                    <strong>
+                      ${{
+                        price.total.toLocaleString(undefined, {
                           maximumFractionDigits: 0
                         })
                       }}
@@ -149,7 +164,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { isVNode } from 'vue'
+import Vue from 'vue'
 import { WorkloadSpec, hoursPerMonth } from '../common'
 import _ from 'lodash'
 
