@@ -167,7 +167,7 @@ export default defineComponent({
       calc1: scyllaCalcs[0],
       scyllaPrices: [],
       rivalPrices: [],
-      billAnnually: false,
+      billAnnually: true,
       sliders: [
         {
           title: 'reads',
