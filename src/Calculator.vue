@@ -32,7 +32,7 @@
               @click="billAnnually = !billAnnually"
             ></Toggle>
             <div>Reserved (1 year)</div>
-            <div class="ml-2 save">Save 15%</div>
+            <div class="ml-2 save">Save 33%</div>
           </div>
           <div
             v-show="selectedDropdownItem.name !== 'details'"
@@ -90,7 +90,7 @@
         </div>
         <div class="right-column__content">
           <div v-if="selectedDropdownItem.name === 'details'">
-            <div class="total">Your total payment will be</div>
+            <div class="total">Your estimated payment will be</div>
             <component
               :is="calc1.name"
               :workload="workload"
