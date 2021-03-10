@@ -6,11 +6,11 @@
         <vue-slider
           v-model="getSetValue"
           :contained="false"
-          :min="min"
-          :max="max"
+          :min="logarithmic ? Math.log10(min) : min"
+          :max="logarithmic ? Math.log10(max) : max"
           dotSize="32"
           tooltip="none"
-          :interval=interval
+          :interval="logarithmic ? 0.05 : interval"
           :disabled="disabled"
         >
           <template v-slot:dot>
@@ -38,11 +38,12 @@
 <script lang="ts">
 import VueSlider from 'vue-slider-component'
 import 'vue-slider-component/theme/default.css'
-import Vue, {
-  ComponentPublicInstance,
-  DefineComponent,
-  defineComponent
-} from 'vue'
+import {defineComponent, DefineComponent} from 'vue'
+
+function roundTo(r: number, n: number): number {
+  return n - (n % r)
+}
+
 export default defineComponent({
   name: 'SliderInput',
   props: {
@@ -85,6 +86,10 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    logarithmic: {
+      type: Boolean,
+      default: false
     }
   },
   components: { VueSlider },
@@ -96,7 +101,7 @@ export default defineComponent({
   },
   computed: {
     getSetFormattedValue: {
-      get(vm: Vue.DefineComponent): any {
+      get(vm: DefineComponent): any {
         const amount = vm.modelValue
         return vm.thousandSeprator(amount)
       },
@@ -104,15 +109,16 @@ export default defineComponent({
         const textAmount = value.toString() || ''
         const noCommasAmount = textAmount.replace(/,/g, '')
         const numberAmount = Number(noCommasAmount)
-        this.$emit('update:modelValue', Math.min(this.max, numberAmount))
+        const amount = Math.min(this.max, numberAmount)
+        this.$emit('update:modelValue', amount)
       }
     },
     getSetValue: {
-      get(vm: Vue.DefineComponent) {
-        return vm.modelValue
+      get(vm: DefineComponent) {
+        return vm.logarithmic ? Math.log10(vm.modelValue) : vm.modelValue
       },
       set(value: number) {
-        this.$emit('update:modelValue', value)
+        this.$emit('update:modelValue', this.logarithmic ? roundTo(this.interval, 10**value) : value)
       }
     }
   },

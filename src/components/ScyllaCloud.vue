@@ -385,7 +385,7 @@ function itemSizePerfFactor(itemSize: number): number {
 */
 function selectClusterConfigs(specs: ResourceSpec): ClusterSpec[] {
   return instanceTypes.aws.map(instanceType => {
-    const nodes = _.find(_.range(1, 100), n => (
+    const nodes = _.find(_.range(1, 300), n => (
         instanceType.vcpu * n >= specs.vcpu &&
         instanceType.memory * n >= specs.memory &&
         instanceType.storage * n >= specs.storage

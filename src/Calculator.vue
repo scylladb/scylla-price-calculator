@@ -16,6 +16,7 @@
             :max-marker="slider.maxMarker"
             :interval="slider.interval"
             :disabled="slider.disabled"
+            :logarithmic="slider.logarithmic || false"
           ></SliderInput>
         </form>
       </div>
@@ -176,7 +177,8 @@ export default defineComponent({
           interval: 1000,
           minMarker: '10K ops/sec',
           maxMarker: '10M ops/sec',
-          label: 'Read ops/sec'
+          label: 'Read ops/sec',
+          logarithmic: true
         },
         {
           title: 'writes',
@@ -185,7 +187,8 @@ export default defineComponent({
           interval: 1000,
           minMarker: '10K ops/sec',
           maxMarker: '10M ops/sec',
-          label: 'Write ops/sec'
+          label: 'Write ops/sec',
+          logarithmic: true
         },
         {
           title: 'itemSize',
@@ -198,11 +201,12 @@ export default defineComponent({
         {
           title: 'storage',
           min: 1,
-          max: 2000,
+          max: 10000,
           interval: 1,
-          minMarker: '1',
-          maxMarker: '2000',
-          label: 'Data set size (TB)'
+          minMarker: '1 TB',
+          maxMarker: '10,000 TB',
+          label: 'Data set size (TB)',
+          logarithmic: true
         },
         {
           title: 'replication',
