@@ -32,13 +32,9 @@ For a specific workload, there are multiple eligible cluster configurations, spe
 This logic, while pretty dumb, works pretty well.
 
 ## Datastax Astra
-Astra calculator and sizing blog post describe different service levels (latencies) for their C* instances. Since Scylla always provides much lower latency than C*, we are comparing with Astra on their claimed "0-25ms" range. We recommend benchmarking both Scylla cloud and Astra yourself to see what latency is actually provided under the suggested configuration - but for the purpose of comparing price we will use Astra suggested configuration as described by Datastax.
-
-Astra "D" (dense) tier instances are earmarked by Datastax for use with "immutable or time series data" and are therefor not part of the comparison made by this calculator. A proper comparison would require accounting for compaction strategies, data read/write patterns and more and would complicate the calculator greatly.
+Since March 2021, Datastax Astra is "serverless" and their pricing is per read/write query, data storage and data transfer similar to DynamoDB on demand. At this moment they do not have a provisioned/reserved mode. The calculator merely sums up the monthly transaction queries and computes the cost based on Astra pricing. As done for data transfer costs and DynamoDB on-demand, we assume average throughput of 1/3 of the peak throughput specified in the calculator input - this means Astra costs can be as high as 3x if the input throughput is the average and not peak.  
 ### References
 - [Astra pricing page](https://www.datastax.com/products/datastax-astra/pricing)
-- [Astra pricing calculator](https://www.datastax.com/products/datastax-astra-calculator)
-- [Astra sizing blog post](https://www.datastax.com/blog/2020/11/sizing-matters-sizing-astra-apache-cassandra-apps)
 ## AWS DynamoDB and Keyspaces
 DynamoDB and Keyspaces have two distinct modes for tables: provisioned and on-demand. On demand is billed by commulative operations count, while provisioned is billed by throughput. Since workload is specified by throughput, we estimate a variable workload with average of 1/3 the peak. E.g. if the specified throughput is 100k reads/sec, commulative billed operations would be `732 hours/month * 3600 sec/month * 100000 reads/sec / 3 = 87,840,000,000 = 87,840 RCU`. Every on-demand capacity unit is 1 million operations.
 
