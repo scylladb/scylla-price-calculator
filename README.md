@@ -43,10 +43,19 @@ In the interest of simplicity we are comparing only strong consistency requests 
 - [DynamoDB provisioned pricing page](https://aws.amazon.com/dynamodb/pricing/provisioned/)
 - [DynamoDB on-demand pricing pages](https://aws.amazon.com/dynamodb/pricing/on-demand/)
 - [Keyspaces pricing page](https://aws.amazon.com/keyspaces/pricing/)
+
+## Azure CosmosDB
+Azure CosmosDB is billed by RU (Request Unit). While the price per RU is well specified, it is unclear how many RUs are consumed by each query. A point read of 1kb item will consume 1 RU, but writes may incur higher RU charges due to indexing, multi AZ replication (1.25X), consistency, etc. Larger item size also consume more RUs but the documentation is very vague about how much. In addition, queries that return multiple items may consume more RUs, and again the documentation is vague regarding the exact billing of such queries. In this model we have assumed multi AZ replication (similar durability to DynamoDB, Keyspaces, Astra and Scylla Cloud), zero indexes and simple single item queries.
+
+## References
+- [Request Units in Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/request-units)
+- [Azure Cosmos DB pricing](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/)
+- [Azure Cosmos DB Capacity calculator](https://cosmos.azure.com/capacitycalculator/)
 ## Trademarks
 - AWS DynamoDB, AWS Keyspaces are trademarks of Amazon.com, Inc
-- Astra is a trademark of Datastax, Inc
+- Datastax is a trademark of Datastax, Inc
 - Cassandra is a trademark of the Apache Software Foundation
+- Azure CosmosDB is a trademark of the Microsoft corporation
 These trademarks are registered in the USA and other countries. No endoresments are implied by the use of these trademarks.
 
 ## Project setup

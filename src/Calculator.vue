@@ -147,6 +147,7 @@ import DynamoDB from './components/DynamoDB.vue'
 import Keyspaces from './components/Keyspaces.vue'
 import Dropdown from './components/Dropdown.vue'
 import Astra from './components/Astra.vue'
+import Cosmos from './components/Cosmos.vue'
 import Toggle from './components/Toggle.vue'
 import SliderInput from './components/SliderInput.vue'
 import _ from 'lodash'
@@ -221,7 +222,8 @@ export default defineComponent({
         { title: 'Compare', name: 'details' },
         { title: 'DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
         { title: 'DataStax Astra', name: 'Astra', icon: 'Astra' },
-        { title: 'Amazon Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' }
+        { title: 'Amazon Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' },
+        { title: 'Azure CosmosDB', name: 'Cosmos', icon: 'Cosmos'}
       ],
       selectedDropdownItem: {}
     }
@@ -232,6 +234,7 @@ export default defineComponent({
     DynamoDB,
     Keyspaces,
     Astra,
+    Cosmos,
     Dropdown,
     Toggle
   },
