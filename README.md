@@ -47,6 +47,7 @@ In the interest of simplicity we are comparing only strong consistency requests 
 ## Azure CosmosDB
 Azure CosmosDB is billed by RU (Request Unit). While the price per RU is well specified, it is unclear how many RUs are consumed by each query. A point read of 1kb item will consume 1 RU, but writes may incur higher RU charges due to indexing, multi AZ replication (1.25X), consistency, etc. Larger item size also consume more RUs but the documentation is very vague about how much. In addition, queries that return multiple items may consume more RUs, and again the documentation is vague regarding the exact billing of such queries. In this model we have assumed multi AZ replication (similar durability to DynamoDB, Keyspaces, Astra and Scylla Cloud), zero indexes and simple single item queries.
 
+The CosmosDB calculator is currently disabled.
 ## References
 - [Request Units in Azure Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/request-units)
 - [Azure Cosmos DB pricing](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/)
