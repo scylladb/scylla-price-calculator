@@ -218,7 +218,7 @@ export default defineComponent({
         }
       ],
       dropdownItems: [
-        { title: 'Compare', name: 'details' },
+        { title: 'Details', name: 'details' },
         { title: 'DynamoDB', name: 'DynamoDB', icon: 'DynamoDB' },
         { title: 'DataStax Astra', name: 'Astra', icon: 'Astra' },
         { title: 'Amazon Keyspaces', name: 'Keyspaces', icon: 'Keyspaces' },
