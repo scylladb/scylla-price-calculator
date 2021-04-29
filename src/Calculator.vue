@@ -238,7 +238,7 @@ export default defineComponent({
   methods: {
     copyLink() {
       const url = new URL(window.location.href)
-      _.forEach(this.workload, (v, k) => {
+      _.forEach(this.inputWorkload, (v, k) => {
         url.searchParams.set(k, v.toString())
       })
 
