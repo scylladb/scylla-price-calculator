@@ -112,7 +112,7 @@
                   <strong>{{
                     clusterCapacity.peakLoad.toLocaleString()
                   }}</strong>
-                  <b>ops/sec</b>
+                  <b>op/sec</b>
                 </td>
               </tr>
             </tbody>

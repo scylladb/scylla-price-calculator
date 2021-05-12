@@ -175,9 +175,9 @@ export default defineComponent({
           min: 10000,
           max: 10000000,
           interval: 1000,
-          minMarker: '10K ops/sec',
-          maxMarker: '10M ops/sec',
-          label: 'Read ops/sec',
+          minMarker: '10K op/sec',
+          maxMarker: '10M op/sec',
+          label: 'Read op/sec',
           logarithmic: true
         },
         {
@@ -185,9 +185,9 @@ export default defineComponent({
           min: 10000,
           max: 10000000,
           interval: 1000,
-          minMarker: '10K ops/sec',
-          maxMarker: '10M ops/sec',
-          label: 'Write ops/sec',
+          minMarker: '10K op/sec',
+          maxMarker: '10M op/sec',
+          label: 'Write op/sec',
           logarithmic: true
         },
         {
