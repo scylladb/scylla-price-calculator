@@ -20,13 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {prices as cosmosPrices} from '../models/Cosmos
+import {Cosmos} from '../Calculator'
 
 export default {
   props: ['workload'],
   computed: {
     prices: (vm: Vue.DefineComponent) => {
-      const _prices = cosmosPrices(vm.workload)
+      const _prices = Cosmos.prices(vm.workload)
 
       vm.$emit('update:modelValue', _prices)
       return _prices

@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {prices as dynamoDBPrices} from '../models/DynamoDB'
+import {DynamoDB} from '../Calculator'
 
 export default {
   props: {
@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     prices: (vm: Vue.DefineComponent) => {
-      const _prices = dynamoDBPrices(vm.workload)
+      const _prices = DynamoDB.prices(vm.workload)
       vm.$emit('update:modelValue', _prices)
 
       return _prices

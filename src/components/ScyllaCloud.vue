@@ -149,17 +149,17 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {prices as scyllaCloudPrices, clusterCapacity as scyllaCloudClusterCapacity, MODE} from '../models/ScyllaCloud'
+import {ScyllaCloud} from '../Calculator'
 
-const modes: Record<string, MODE> = {
-  CQL: MODE.CQL,
-  'Alternator with LWT': MODE.LWT,
-  'Alternator without LWT': MODE.NoLWT
+const modes: Record<string, ScyllaCloud.MODE> = {
+  CQL: ScyllaCloud.MODE.CQL,
+  'Alternator with LWT': ScyllaCloud.MODE.LWT,
+  'Alternator without LWT': ScyllaCloud.MODE.NoLWT
 }
 
 const data = {
   modes,
-  mode: MODE.CQL,
+  mode: ScyllaCloud.MODE.CQL,
   replicationFactor: 3,
 }
 
@@ -191,7 +191,7 @@ export default {
       return vm.prices.filter((p: any) => p.id === vm.pricing)
     },
     clusterSpecs(vm: Vue.DefineComponent) {
-      return scyllaCloudPrices(vm.workload, vm.replicationFactor)
+      return ScyllaCloud.prices(vm.workload, vm.replicationFactor)
     },
     cluster(vm: Vue.DefineComponent) {
       return vm.clusterSpecs.cluster
@@ -202,7 +202,7 @@ export default {
       return _prices
     },
     clusterCapacity(vm: Vue.DefineComponent) {
-      return scyllaCloudClusterCapacity(vm.clusterSpecs.cluster, vm.replicationFactor)
+      return ScyllaCloud.clusterCapacity(vm.clusterSpecs.cluster, vm.replicationFactor)
     } 
   }
 }

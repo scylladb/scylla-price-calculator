@@ -20,13 +20,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {prices as keyspacesPrices} from '../models/Keyspaces'
+import {Keyspaces} from '../Calculator'
 
 export default {
   props: ['workload'],
   computed: {
     prices: (vm: Vue.DefineComponent) => {
-      const _prices = keyspacesPrices(vm.workload)
+      const _prices = Keyspaces.prices(vm.workload)
       vm.$emit('update:modelValue', _prices)
       return _prices
     }

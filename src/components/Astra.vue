@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { defineComponent, DefineComponent} from 'vue'
-import {prices as astraPrices} from '../models/Astra'
+import {Astra} from '../Calculator'
 
 export default defineComponent({
   data() {
@@ -63,7 +63,7 @@ export default defineComponent({
   },
   computed: {
     prices: (vm: DefineComponent) => {
-      const _prices = astraPrices(vm.workload)
+      const _prices = Astra.prices(vm.workload)
 
       vm.$emit('update:modelValue', _prices)
       return _prices
