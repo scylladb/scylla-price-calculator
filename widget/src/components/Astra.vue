@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { defineComponent, DefineComponent} from 'vue'
-import {Astra} from '../Calculator'
+import {Astra} from 'scylla-price-calculator-lib'
 
 export default defineComponent({
   data() {

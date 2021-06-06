@@ -149,7 +149,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {ScyllaCloud} from '../Calculator'
+import {ScyllaCloud} from 'scylla-price-calculator-lib'
 
 const modes: Record<string, ScyllaCloud.MODE> = {
   CQL: ScyllaCloud.MODE.CQL,

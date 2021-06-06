@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
     "prettier": "^1.19.1",
+    "scylla-price-calculator-lib": "file:../lib",
     "vue": "^3.0.0",
     "vue-slider-component": "^4.0.0-beta.3"
   },

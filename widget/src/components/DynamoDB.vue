@@ -1,8 +1,13 @@
 <template>
-  <div class="pricing" id="keyspaces">
+  <div class="pricing" id="dynamodb">
     <template v-for="price in prices" :key="price.id">
       <div>
-        <div class="price-name text-capitalize">{{ price.name }}</div>
+        <div class="price-name text-capitalize">
+          {{ price.name }}
+          <div class="font-weight-light d-inline-block">
+            {{ price.subname }}
+          </div>
+        </div>
         <div class="price__wrapper">
           <div class="price d-flex align-items-baseline">
             <small>$</small
@@ -20,14 +25,19 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import {Keyspaces} from '../Calculator'
+import {DynamoDB} from 'scylla-price-calculator-lib'
 
 export default {
-  props: ['workload'],
+  props: {
+    workload: {
+      type: Object
+    }
+  },
   computed: {
     prices: (vm: Vue.DefineComponent) => {
-      const _prices = Keyspaces.prices(vm.workload)
+      const _prices = DynamoDB.prices(vm.workload)
       vm.$emit('update:modelValue', _prices)
+
       return _prices
     }
   }
